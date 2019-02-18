@@ -140,3 +140,7 @@ rm(Dh,D,Dw,Mh,M,Mw);gc()
 # exposure check too.
 #LOW$Dw[100]/LOW$Mw[100]
 #UPP$Dw[100]/UPP$Mw[100]
+
+#GBD <- local(get(load(file.path("Data","Grouped","GBD","GBDmid.Rdata"))))
+#dput(sort(unique(GBD$location)))
+#write.csv(sort(unique(GBD$location)),file=file.path("Data","Inputs","GBD","GBD_Countries.csv"),row.names=FALSE)
