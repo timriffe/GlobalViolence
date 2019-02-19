@@ -35,8 +35,8 @@ ungroup.GBD <- function(.SD,omega=110){
 	nlast  <- omega - max(x) + 1
 	offset <- .SD$D / .SD$M
 	off1   <- pclm(x=x,y=offset,nlast=nlast,control=list(lambda=1/1e6))$fitted
-	
-	M  <- pclm(x=x,y=.SD$D,nlast=nlast,offset=off1,control=list(lambda=1/1e6))$fitted
+	fac <- ifelse(sum(.SD$D) > 2e6,10,1)
+	M  <- pclm(x=x,y=.SD$D/fac,nlast=nlast,offset=off1/fac,control=list(lambda=1/1e6))$fitted
 	M[is.nan(M)] <- 0
 	Mh <- c(graduateSmall(x,.SD$Dh,off1,nlast))
 	Mw <- c(graduateSmall(x,.SD$Dw,off1,nlast))
