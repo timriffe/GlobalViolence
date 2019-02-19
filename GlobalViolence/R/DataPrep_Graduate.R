@@ -26,8 +26,13 @@ graduateSmall <- function(x,y,off1,nlast){
 	} else {
 		
 		Mi     <- splitMono(Value = y,AgeInt = AgeInt)
-		Mi     <- beers(Mi,Age=0:110)
-		return(rescaleAgeGroups(Mi,rep(1,111),y,AgeInt,recursive=FALSE,splitfun=splitUniform) / off1)
+		Mii    <- beers(Mi,Age=0:110)
+		ind <- Mii < 0
+		if (any(ind)){
+			Mii[ind] <- Mi[ind]
+		}
+		
+		return(rescaleAgeGroups(Mii,rep(1,111),y,AgeInt,recursive=FALSE,splitfun=splitUniform) / off1)
 	}
 }
 ungroup.GBD <- function(.SD,omega=110){

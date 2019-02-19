@@ -42,9 +42,16 @@ variants <- c("low","mid","upp")
 for (i in 1:length(variants)){
 	GBDi <- local(get(load(file.path("Data","Single","GBD",paste0("GBD",variants[i],".Rdata")))))
 	GBDi[,sdx:=mx2sd(M),.(location,year,Sex)]
+	GBDi[,sdx_no_h:=mx2sd(M-Mh),.(location,year,Sex)]
+	GBDi[,sdx_no_hw:=mx2sd(M-Mh-Mw),.(location,year,Sex)]
 	GBDi[,edx:=mx2edagger(M),.(location,year,Sex)]
+	GBDi[,edx_no_h:=mx2edagger(M-Mh),.(location,year,Sex)]
+	GBDi[,edx_no_hw:=mx2edagger(M-Mh-Mw),.(location,year,Sex)]
 	save(GBDi, file = file.path("Data","Results","GBD",paste0("GBD",variants[i],".Rdata")))
 	rm(GBDi);gc()
 }
 
-
+range(GBDi$M - GBDi$Mh - GBDi$Mw)
+range(GBDi$M)
+range(GBDi$Mh)
+range(GBDi$Mw)
