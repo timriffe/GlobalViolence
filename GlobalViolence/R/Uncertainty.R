@@ -7,46 +7,12 @@ me <- system("whoami",intern=TRUE)
 if (me == "tim"){
 	setwd("/home/tim/git/GlobalViolence/GlobalViolence")
 }
-
+source("R/Functions.R")
 devtools::load_all("/home/tim/git/DistributionTTD/DistributionTTD/R/DistributionTTD")
 library(DemoTools)
 library(data.table)
 dir.create(file.path("Data","Results","GBD"), showWarnings = FALSE, recursive = TRUE)
 
-mx2dx <- function(mx){
-	ax <- c(.1,rep(.5,110))
-	qx <- mxax2qx(nMx=mx, nax=ax, AgeInt=rep(1,111), closeout = TRUE,IMR=NA)
-	lx2dx(qx2lx(qx,radix=1))
-}
-
-mx2sd <- function(mx){
-	dx  <- mx2dx(mx)
-	vx  <- momentN(dx, n = 2, ax = c(.1,rep(.5,110)))
-	sdx <- suppressWarnings(sqrt(vx))
-	sdx
-}
-
-mx2edagger <- function(mx){
-	ax <- c(.1,rep(.5,110))
-	qx <- mxax2qx(nMx=mx, nax=ax, AgeInt=rep(1,111), closeout = TRUE,IMR=NA)
-	lx <- qx2lx(qx,radix=1)
-	dx <- lx2dx(lx)
-	Lx <- lxdxax2Lx(lx = lx, ndx = dx, nax = ax, AgeInt=rep(1,111))
-	Tx <- Lx2Tx(Lx)
-	ex <- Tx / lx
-	DX <- matrix(dx,nrow=111,ncol=111)
-	DX[upper.tri(DX)] <- 0
-	colSums(sweep(DX,2,colSums(DX),`/`) * ex)
-}
-mx2ex <- function(mx){
-	ax <- c(.1,rep(.5,110))
-	qx <- mxax2qx(nMx=mx, nax=ax, AgeInt=rep(1,111), closeout = TRUE,IMR=NA)
-	lx <- qx2lx(qx)
-	dx <- lx2dx(lx)
-	Lx <- lxdxax2Lx(lx = lx, ndx = dx, nax = ax, AgeInt=rep(1,111))
-	Tx <- Lx2Tx(Lx)
-	Tx / lx
-}
 
 # for now just GBD
 variants <- c("low","mid","upp")
@@ -78,15 +44,7 @@ for (i in 1:length(variants)){
 	rm(GBDi);gc()
 }
 
-setnames(GBDi,"ISO","ISO3")
-GBDi <- local(get(load(file.path("Data","Results","GBD",paste0("GBD",variants[i],".Rdata")))))
-library(rworldmap)
-mapped_data <- joinCountryData2Map(GBDi[Age==0&Sex==1], joinCode = "ISO3", 
-		nameJoinColumn = "location")
-GBDi$edx[is.nan(GBDi$edx)] <- NA
-quantile(GBDi[Age==0]$edx,na.rm=TRUE)
-par(mai=c(0,0,0.2,0),xaxs="i",yaxs="i")
-mapCountryData(mapped_data, nameColumnToPlot = "edx")
+
 
 
 #GBDi <- local(get(load(file.path("Data","Results","GBD",paste0("GBD",variants[2],".Rdata")))))
