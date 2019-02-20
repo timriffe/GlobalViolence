@@ -29,13 +29,14 @@ mx2sd <- function(mx){
 mx2edagger <- function(mx){
 	ax <- c(.1,rep(.5,110))
 	qx <- mxax2qx(nMx=mx, nax=ax, AgeInt=rep(1,111), closeout = TRUE,IMR=NA)
-	lx <- qx2lx(qx)
+	lx <- qx2lx(qx,radix=1)
 	dx <- lx2dx(lx)
 	Lx <- lxdxax2Lx(lx = lx, ndx = dx, nax = ax, AgeInt=rep(1,111))
 	Tx <- Lx2Tx(Lx)
 	ex <- Tx / lx
-	fya <- da2fya(dx)
-	colSums(fya * ex)
+	DX <- matrix(dx,nrow=111,ncol=111)
+	DX[upper.tri(DX)] <- 0
+	colSums(sweep(DX,2,colSums(DX),`/`) * ex)
 }
 mx2ex <- function(mx){
 	ax <- c(.1,rep(.5,110))
@@ -64,10 +65,38 @@ for (i in 1:length(variants)){
 	rm(GBDi);gc()
 }
 
+# ISO Codes for mapping. This should be earlier in processing, move at some point.
 
-GBDi <- local(get(load(file.path("Data","Results","GBD",paste0("GBD",variants[2],".Rdata")))))
+ISO <- read.csv(file.path("Data","Inputs","GBD","GBD_ISO3.csv"),stringsAsFactors=FALSE)
+recvec <- ISO[,2]
+names(recvec) <- ISO[,1]
 
-plot(GBDi[Age == 15]$ex,GBDi[Age == 15]$edx, pch = 16, col = "#00000050",cex=.7)
-ex <- mx2ex(GBDi[year==2000&location=="United States"&Sex==2]$M)
-dx <- mx2dx(GBDi[year==2000&location=="United States"&Sex==2]$M)
-plot(dx)
+for (i in 1:length(variants)){
+	GBDi <- local(get(load(file.path("Data","Results","GBD",paste0("GBD",variants[i],".Rdata")))))
+	GBDi$ISO3 <- recvec[GBDi$location]
+	save(GBDi, file = file.path("Data","Results","GBD",paste0("GBD",variants[i],".Rdata")))
+	rm(GBDi);gc()
+}
+
+setnames(GBDi,"ISO","ISO3")
+GBDi <- local(get(load(file.path("Data","Results","GBD",paste0("GBD",variants[i],".Rdata")))))
+library(rworldmap)
+mapped_data <- joinCountryData2Map(GBDi[Age==0&Sex==1], joinCode = "ISO3", 
+		nameJoinColumn = "location")
+GBDi$edx[is.nan(GBDi$edx)] <- NA
+quantile(GBDi[Age==0]$edx,na.rm=TRUE)
+par(mai=c(0,0,0.2,0),xaxs="i",yaxs="i")
+mapCountryData(mapped_data, nameColumnToPlot = "edx")
+
+
+#GBDi <- local(get(load(file.path("Data","Results","GBD",paste0("GBD",variants[2],".Rdata")))))
+#plot(GBDi[Age == 0]$ex,GBDi[Age == 0]$edx, pch = 16, col = "#00000050",cex=.7)
+#
+
+
+
+
+
+
+
+
