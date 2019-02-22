@@ -66,3 +66,72 @@ mx2ex_i <- function(mx,mxc){
 #(mx2ex_i(mx,mxc) - mx2ex(mx) ) -
 #(mx2ex(mx-mxc) -mx2ex(mx) )
 
+# ----------------------------------
+# some functions used in Comparison.R
+wmean <- function(x,w){
+	sum(x*w)/sum(w)
+}
+
+mx2sd_mat <- function(mxmat){
+	mx2sd(rowSums(mxmat))
+}
+
+mx2sd_vec <- function(mxcvec,n=3,Age=10){
+	dim(mxcvec) <- c(length(mxcvec)/3,3)
+	mx2sd_mat(mxcvec)[Age+1]
+}
+decomp_sd <- function(.SD,Age=10){
+	pars1 <- as.matrix(.SD[,c("Mo","Mh","Mw")])
+	pars2 <- as.matrix(.SD[,c("low_Mo","low_Mh","low_Mw")])
+	
+	
+	
+	comp <- horiuchi(mx2sd_vec,c(pars1),c(pars2),N=20,Age=Age)
+	dim(comp)      <- dim(pars1)
+	dimnames(comp) <- dimnames(pars1)
+	data.table(data.frame(Age=0:110,comp))
+}
+
+
+mx2edagger_mat <- function(mxmat){
+	mx2edagger(rowSums(mxmat))
+}
+
+mx2edagger_vec <- function(mxcvec,n=3,Age=10){
+	dim(mxcvec) <- c(length(mxcvec)/3,3)
+	mx2edagger_mat(mxcvec)[Age+1]
+}
+decomp_edagger <- function(.SD,Age=10){
+	pars1 <- as.matrix(.SD[,c("Mo","Mh","Mw")])
+	pars2 <- as.matrix(.SD[,c("low_Mo","low_Mh","low_Mw")])
+	
+	comp <- horiuchi(mx2edagger_vec,c(pars1),c(pars2),N=20,Age=Age)
+	dim(comp)      <- dim(pars1)
+	dimnames(comp) <- dimnames(pars1)
+	data.table(data.frame(Age=0:110,comp))
+}
+
+# fast temp
+edaggTemp <- function(mxcvec,.N=3,a=10,n=60){
+	dim(mxcvec) <- c(111,.N)
+	mx          <- rowSums(mxcvec)
+	n           <- n + 1
+	mx          <- mx[-(1:a)][1:n]
+	ax          <- rep(.5,n)
+	qx          <- mx / (1 + (1 - ax) * mx) 
+	lx          <- cumprod(c(1, 1 - qx[-n]))
+	Lx          <- (lx[-n] + lx[-1])/2
+	Tx          <- Lx2Tx(Lx)
+	ex          <- Tx / lx[-n]
+	dxx         <- -diff(lx)
+	wmean(ex,dxx)
+}
+decomp_edagger_temp <- function(.SD,Age=10,n=60){
+	pars1 <- as.matrix(.SD[,c("Mo","Mh","Mw")])
+	pars2 <- as.matrix(.SD[,c("low_Mo","low_Mh","low_Mw")])
+	
+	comp <- horiuchi(edaggTemp,c(pars1),c(pars2),N=20,a=Age,n=n)
+	dim(comp)      <- dim(pars1)
+	dimnames(comp) <- dimnames(pars1)
+	data.table(data.frame(Age=0:110,comp))
+}
