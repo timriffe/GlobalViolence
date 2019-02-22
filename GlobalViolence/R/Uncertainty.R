@@ -57,10 +57,28 @@ for (i in 1:length(variants)){
 #plot(GBDi[Age == 0]$ex,GBDi[Age == 0]$edx, pch = 16, col = "#00000050",cex=.7)
 #
 
-
-
-
-
-
+# ------------------------------
+# Sex ratio check
+#GBDi <- local(get(load(file.path("Data","Results","GBD",paste0("GBDmid.Rdata")))))
+#
+#mx2lx <- function(mx){
+#ax <- c(.1,rep(.5,110))
+#qx <- mxax2qx(nMx=mx, nax=ax, AgeInt=rep(1,111), closeout = TRUE,IMR=NA)
+#lx <- qx2lx(qx,radix=1)
+#}
+#asdrlt <- function(mx,wx){
+#	lx <- mx2lx(mx)
+#	wmean(wx,lx)
+#}
+#
+#HM <- GBDi[,.(asdrMw = asdrlt(M,Mh)),by=.(ISO,Sex,year)]
+#SRW <- function(X){
+#	X$asdrMw[X$Sex==1] / X$asdrMw[X$Sex==2]
+#}
+#SR <- HM[,.(SRw = SRW(.SD)),by=.(ISO,year)]
+#
+#mean(SR$SRw)
+#SRy <- SR[,.(SRw = mean(SRw)),by=.(year)]
+#plot(SRy)
 
 
