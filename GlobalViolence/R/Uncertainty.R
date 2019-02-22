@@ -8,9 +8,15 @@ if (me == "tim"){
 	setwd("/home/tim/git/GlobalViolence/GlobalViolence")
 }
 source("R/Functions.R")
-devtools::load_all("/home/tim/git/DistributionTTD/DistributionTTD/R/DistributionTTD")
+# install if necessary
+#library(devtools)
+#install_github("timriffe/DistributionTTD/DistributionTTD/R/DistributionTTD")
+#install_github("timriffe/DemoTools")
+library(DistributionTTD)
 library(DemoTools)
 library(data.table)
+
+
 dir.create(file.path("Data","Results","GBD"), showWarnings = FALSE, recursive = TRUE)
 
 

@@ -13,11 +13,16 @@ if (me == "tim"){
 }
 
 library(data.table)
+# install if necessary
+#library(devtools)
+#install_github("timriffe/DistributionTTD/DistributionTTD/R/DistributionTTD")
+#install_github("timriffe/DemoTools")
 library(DemoTools)
-devtools::load_all("/home/tim/git/DistributionTTD/DistributionTTD/R/DistributionTTD")
-source("R/Functions.R")
+library(DistributionTTD)
 library(DemoDecomp)
+source("R/Functions.R")
 
+# variant
 vnt  <- "mid"
 yr   <- 2017
 
