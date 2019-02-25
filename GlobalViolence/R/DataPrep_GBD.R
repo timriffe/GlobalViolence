@@ -8,9 +8,19 @@ me <- system("whoami",intern=TRUE)
 if (me == "tim"){
 	setwd("/home/tim/git/GlobalViolence/GlobalViolence")
 }
+if (me == "sam\\jmaburto"){
+  setwd("C:/Users/jmaburto/Documents/GitHub/GlobalViolence/GlobalViolence/")
+}
+
 
 library(data.table)
 gbd.folder <- file.path("Data","Inputs","GBD")
+
+if (me == "sam\\jmaburto"){
+  gbd.folder <- 'C:/Users/jmaburto/Documents/AburtoDiLegoRiffe_Data/Inputs/GBD'
+}
+
+
 dir.create(file.path("Data","Grouped","GBD"), showWarnings = FALSE, recursive = TRUE)
 
 
