@@ -81,4 +81,3 @@ for (i in 1:length(variants)){
 #SRy <- SR[,.(SRw = mean(SRw)),by=.(year)]
 #plot(SRy)
 
-
