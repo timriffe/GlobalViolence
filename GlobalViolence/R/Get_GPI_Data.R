@@ -13,7 +13,7 @@ if (me == "sam\\jmaburto"){
   setwd("C:/Users/jmaburto/Documents/GitHub/GlobalViolence/GlobalViolence/")
 }
 
-
+#install.packages('countrycode')
 library(htmltab)
 library(data.table)
 library(countrycode)
