@@ -12,11 +12,15 @@ me <- system("whoami",intern=TRUE)
 if (me == "tim"){
 	setwd("/home/tim/git/GlobalViolence/GlobalViolence")
 }
+if (me == "sam\\jmaburto"){
+  setwd("C:/Users/jmaburto/Documents/GitHub/GlobalViolence/GlobalViolence/")
+}
 
+#install.packages('ungroup')
 library(data.table)
 library(ungroup)
 library(DemoTools)
-library(parallel)
+ifelse(me == "tim", library(parallel),library(parallelsugar))
 
 graduateSmall <- function(x,y,off1,nlast){
 	AgeInt <- age2int(x,OAvalue=nlast)
