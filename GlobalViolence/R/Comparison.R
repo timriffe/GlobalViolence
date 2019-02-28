@@ -1,6 +1,7 @@
 # TODO: rerun this after replace mx in old ages with a MortalityLaws extrapolation.
 # ggompertz, Beard, MakehamKannisto all options. The cause-specific partition in old 
 # ages is inconsequential, so no need to extrapolate it in some clever way.
+# TR 28-2-2019: see new script DataPrep_Closeout.R under construction
 
 # Author: tim
 ###############################################################################
