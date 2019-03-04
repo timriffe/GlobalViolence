@@ -115,6 +115,9 @@ plot_testing <- function(X,x,sx="Males",ylim=c(-.1,1.7)){
 
 
 DECsd  <- HIGHVIO[,decomp_sd(.SD),by=list(ISO3,Sex)]
+save(DECsd,file="Data/Results/GBD/DECsd10_HIGHVIO.Rdata")
+
+
 DECed  <- HIGHVIO[,decomp_edagger(.SD),by=list(ISO3,Sex)]
 # (i.e. tempoirary edagger 10-60)
 #DECedt <- HIGHVIO[,decomp_edagger_temp(.SD,n=50),by=list(ISO3,Sex)]
