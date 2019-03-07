@@ -20,35 +20,120 @@ if (me == "sam\\jmaburto"){
 library(data.table)
 library(ungroup)
 library(DemoTools)
+library(MortalitySmooth)
 ifelse(me == "tim", library(parallel),library(parallelsugar))
 
-graduateSmall <- function(x,y,off1,nlast){
-	AgeInt <- age2int(x,OAvalue=nlast)
-	if (sum(y) < 100){
-		Mi <- splitUniform(Value = y,AgeInt = AgeInt)
-		return(Mi / off1)
-	} else {
-		
-		Mi     <- splitMono(Value = y,AgeInt = AgeInt)
-		Mii    <- beers(Mi,Age=0:110)
-		ind <- Mii < 0
-		if (any(ind)){
-			Mii[ind] <- Mi[ind]
-		}
-		
-		return(rescaleAgeGroups(Mii,rep(1,111),y,AgeInt,recursive=FALSE,splitfun=splitUniform) / off1)
-	}
-}
-ungroup.GBD <- function(.SD,omega=110){
-	x      <- .SD$Age
+#graduateSmall <- function(x,y,off1,nlast){
+#	AgeInt <- age2int(x,OAvalue=nlast)
+#	if (sum(y) < 100){
+#		Mi <- splitUniform(Value = y,AgeInt = AgeInt)
+#		return(Mi / off1)
+#	} else {
+#		
+#		Mi     <- splitMono(Value = y,AgeInt = AgeInt)
+#		Mii    <- beers(Mi,Age=0:110)
+#		ind <- Mii < 0
+#		if (any(ind)){
+#			Mii[ind] <- Mi[ind]
+#		}
+#		
+#		return(rescaleAgeGroups(Mii,rep(1,111),y,AgeInt,recursive=FALSE,splitfun=splitUniform) / off1)
+#	}
+#}
+#ungroup.GBD <- function(.SD,omega=110){
+#	x      <- .SD$Age[-1]
+#	y      <- .SD$D[-1]
+#	m      <- .SD$M[-1]
+#	# just retain IMR, no problem
+#	m0     <- .SD$M[1]
+#	nlast  <- omega - max(x) + 1
+#	offset <- y / m
+#	off1   <- pclm(x=x,y=offset,nlast=nlast,control=list(lambda=1/1e6))$fitted
+#	fac <- ifelse(sum(.SD$D) > 2e6,10,1)
+#	M  <- pclm(x=x,y=y/fac,nlast=nlast,offset=off1/fac,control=list(lambda=1/1e6))$fitted
+#	M[is.nan(M)] <- 0
+#	Mh <- c(graduateSmall(x,.SD$Dh,off1,nlast))
+#	Mw <- c(graduateSmall(x,.SD$Dw,off1,nlast))
+#	data.table(data.frame(
+#					location=rep(.SD$location[1],111),
+#					year=rep(.SD$year[1],111),
+#					Sex =rep(.SD$Sex[1],111),
+#					Age=0:110,
+#					M=M,Mh=Mh,Mw=Mw))
+#}
+
+# use this for all-cause mortality graduation.
+GBD.pclm <- function(.SD,omega=110,mort = "all"){
+	
+	mtype <- ifelse(mort == "all","",mort)
+	Dx <- paste0("D",mtype)
+	Mx <- paste0("M",mtype)
+	x      <- .SD$Age[-1]
+	y      <- .SD[[Dx]][-1]
+	m      <- .SD[[Mx]][-1]
+	# just retain IMR, no problem
+	m0     <- .SD[[Mx]][1]
 	nlast  <- omega - max(x) + 1
-	offset <- .SD$D / .SD$M
+	offset <- y / m
 	off1   <- pclm(x=x,y=offset,nlast=nlast,control=list(lambda=1/1e6))$fitted
-	fac <- ifelse(sum(.SD$D) > 2e6,10,1)
-	M  <- pclm(x=x,y=.SD$D/fac,nlast=nlast,offset=off1/fac,control=list(lambda=1/1e6))$fitted
+	fac    <- ifelse(sum(y) > 2e6,10,1)
+	M      <- pclm(x=x,y=y/fac,nlast=nlast,offset=off1/fac,control=list(lambda=1))$fitted
 	M[is.nan(M)] <- 0
-	Mh <- c(graduateSmall(x,.SD$Dh,off1,nlast))
-	Mw <- c(graduateSmall(x,.SD$Dw,off1,nlast))
+	M      <- c(m0,M)  
+	M
+}
+
+# use this for homicide and 'other violence' graduation
+GBD.mono.ms <- function(.SD, omega=110,lambda=.1,mort="h"){
+	mtype <- ifelse(mort == "all","",mort)
+	Dx <- paste0("D",mtype)
+	Mx <- paste0("M",mtype)
+	x      <- .SD$Age
+	y      <- .SD[[Dx]]
+	m      <- .SD[[Mx]]
+	
+	if (all(m == 0)){
+		return(rep(0,111))
+	}
+	
+	m0     <- .SD[[Mx]][1]
+	
+	nlast  <- omega - max(x) + 1
+	offset <- y / m
+	off1   <- splitMono(offset, AgeInt = age2int(Age = x, OAvalue = nlast))
+	m5     <- rep(m, times = age2int(Age = x, OAvalue = nlast))
+
+	w <- rep(1,110)
+	w[off1[-1] == 0] <- 0
+	
+	d      <- m5[-1] * off1[-1]
+	if (floor(sum(d)) < 10){
+		return(m5)
+	} 
+	if (sum(d) < 1000){
+		fac <- 100
+	} else {
+		fac <- 1
+	}
+	d      <- d * fac
+	mod    <- suppressWarnings(Mort1Dsmooth(
+			    x = 1:110, 
+			    y = d, 
+			    offset = log(off1[-1]), 
+			    w = w, 
+			    lambda = lambda, 
+			    method = 3))
+	mx     <- c(m0, exp(predict(mod, newdata = 1:110)) / fac)
+	mx
+}
+
+GBD.chunk <- function(.SD,omega=110){
+	
+	M  <- suppressWarnings(GBD.pclm(.SD,omega=110,mort = "all"))
+	Mh <- GBD.mono.ms(.SD,omega=110,mort = "h")
+	Mw <- GBD.mono.ms(.SD,omega=110,mort = "w")
+	
+	
 	data.table(data.frame(
 					location=rep(.SD$location[1],111),
 					year=rep(.SD$year[1],111),
@@ -57,6 +142,7 @@ ungroup.GBD <- function(.SD,omega=110){
 					M=M,Mh=Mh,Mw=Mw))
 }
 
+GBD.chunk(sdl[[1]])
 dir.create(file.path("Data","Single","GBD"), showWarnings = FALSE, recursive = TRUE)
 
 gbd.folder <- file.path("Data","Grouped","GBD")
@@ -67,7 +153,7 @@ variants <- c("low","mid","upp")
 for (i in 1:length(variants)){
 	GBDi <- local(get(load(file.path("Data","Grouped","GBD",paste0("GBD",variants[i],".Rdata")))))
 	sdl  <- split(GBDi,list(GBDi$location,GBDi$Sex,GBDi$year))
-	sdl  <- mclapply(sdl, ungroup.GBD, mc.cores = 3)
+	sdl  <- mclapply(sdl, GBD.chunk, mc.cores = 3)
 	GBDi <- rbindlist(sdl)
 	rm(sdl);gc()
 	save(GBDi,file=file.path("Data","Single","GBD",paste0("GBD",variants[i],".Rdata")))
