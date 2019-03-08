@@ -185,6 +185,40 @@ for (i in 1:length(variants)){
 # these are not 'finalized' still, as the pclm closeout isn't demographically informed, 
 # and can go haywire. Next step DataPrep_Closeout.R
 
+# diagnostic flipbooks
+for (i in 1:3){
+	GBDi <-  local(get(load(
+							file.path("Data","Single","GBD",paste0("GBD",variants[i],".Rdata")))))
+	
+	pdf(file.path("Figures","GBD","Closeout",paste0("Diagnostic_GBD",variants[i],"males_pclm.pdf")))
+	for (l in 1:length(locs)){
+		M <- acast(GBDi[Sex == 1 & location == locs[l]], Age~year, value.var = "M")
+		matplot(0:110, M, ylim = c(1e-6, 1.5), log = 'y', type = 'l', lty = 1, col = "#00000088",
+				main = locs[l])
+	}
+	dev.off()
+	
+	pdf(file.path("Figures","GBD","Closeout",paste0("Diagnostic_GBD",variants[i],"females_pclm.pdf")))
+	for (l in 1:length(locs)){
+		M <- acast(GBDi[Sex == 2 & location == locs[l]], Age~year, value.var = "M")
+		matplot(0:110, M, ylim = c(1e-6, 1.5), log = 'y', type = 'l', lty = 1, col = "#00000088",
+				main = locs[l])
+	}
+	dev.off()
+	
+	rm(GBDi);gc()
+}
+
+pdf(file.path(file.path("Figures","GBD","Closeout","Diagnostic_pclm_males.pdf")))
+for (l in 1:length(locs)){
+	M <- acast(GBDi[Sex==1 & location == locs[l]],Age~year,value.var = "M")
+	matplot(0:110,M,ylim=c(1e-6,1.5),log='y',type='l',lty=1,col="#00000088",
+			main = locs[l])
+}
+dev.off()
+
+
+
 # end
 # ---------------------------
 
