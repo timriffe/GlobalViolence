@@ -61,27 +61,28 @@ extrap_low    <- c(60,70,80,90)
 #lines(0:110,mod$values)
 
 for (i in 1:3){
-GBDi          <- local(get(load(file.path("Data","Single","GBD",paste0("GBD",variants[i],".Rdata")))))
-GBDi$location <- as.character(GBDi$location)
-locs          <- unique(GBDi$location)
-
+	GBDi          <- local(get(load(file.path("Data","Single","GBD",paste0("GBD",variants[i],".Rdata")))))
+	GBDi$location <- as.character(GBDi$location)
+	locs          <- unique(GBDi$location)
+	
 # this simply overwrites M
-GBDi[,M:=GBD.closeout(.SD,
-				fit_low = 65, 
-		        fit_up = 90, 
-		        extrap_low = 65, 
-		        omega = 110, 
-		        law = "ggompertz"),
-		by = .(location, Sex, year)]
-save(GBDi,file = file.path("Data","Closeout","GBD",paste0(GBD,variants[i],"ggompertz_65_90_65.pdf")))
-rm(GBDi);gc()
+	GBDi[,M:=GBD.closeout(.SD,
+					fit_low = 65, 
+					fit_up = 90, 
+					extrap_low = 65, 
+					omega = 110, 
+					law = "ggompertz"),
+			by = .(location, Sex, year)]
+	save(GBDi,file = file.path("Data","Closeout","GBD",
+					paste0("GBD",variants[i],"_ggompertz_65_90_65.Rdata")))
+	rm(GBDi);gc()
 }
 
 # diagnostic flipbooks
 for (i in 1:3){
 	GBDi <-  local(get(load(
 							file.path("Data","Closeout","GBD",
-									paste0(GBD,variants[i],"ggompertz_65_90_65.pdf")))))
+									paste0("GBD",variants[i],"_ggompertz_65_90_65.Rdata")))))
 	
 	pdf(file.path("Figures","GBD","Closeout",paste0("Diagnostic_GBD",variants[i],"_ggompertz_65_90_65.pdf")))
 	for (l in 1:length(locs)){
