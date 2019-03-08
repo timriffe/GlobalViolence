@@ -1,4 +1,4 @@
-# Note: now we use data after the Closeout step.
+# Note: now we use data after DataPrep_Closeout.R
 # Author: tim
 ###############################################################################
 me <- system("whoami",intern=TRUE)
@@ -41,7 +41,23 @@ for (i in 1:length(variants)){
 	rm(GBDi);gc()
 }
 
-# Next file, for example Comparison.R
+# oops we need to recuperate ISO codes
+# ISO Codes for mapping. This should be earlier in processing, move at some point.
+ISO           <- read.csv(file.path("Data","Inputs","GBD","GBD_ISO3.csv"),
+		stringsAsFactors = FALSE)
+recvec        <- ISO[, 2]
+names(recvec) <- ISO[, 1]
+
+for (i in 1:length(variants)){
+	GBDi      <- local(get(load(file.path("Data","Results","GBD",paste0("GBD",variants[i],".Rdata")))))
+	GBDi$ISO3 <- recvec[GBDi$location]
+	save(GBDi, file = file.path("Data","Results","GBD",paste0("GBD",variants[i],".Rdata")))
+	rm(GBDi);gc()
+}
+
+
+
+# Next file, for example Comparison.R or Relationships.R
 # end
 # --------------------------------
 

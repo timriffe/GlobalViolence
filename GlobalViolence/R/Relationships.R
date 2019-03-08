@@ -1,3 +1,8 @@
+# this file can be run as soon as Data/Results is populated,
+# following Uncertainty.R. Right now just written for GBD results
+# here we produce a bunch of figures. These are visual diagnostics
+# and not presentation graphics.
+
 # Author: tim
 ###############################################################################
 
@@ -15,7 +20,7 @@ library(data.table)
 GPI      <- read.csv(file.path("Data","Inputs","GPI","GPI_ISO3.csv"),stringsAsFactors=FALSE)
 setnames(GPI,"ISO3c","ISO3")
 GPI      <- data.table(GPI)
-GPIi <- GPI[type == "score"]
+GPIi     <- GPI[type == "score"]
 
 
 # loop over variable combinations
@@ -24,15 +29,17 @@ variants <- c("low","mid","upp")
 sexes    <- c(1,2)
 disps    <- c("sdx","edx")
 
+# categorize results a bit more
+dir.create(file.path("Figures","GBD","Bivariate","low"), showWarnings = FALSE, recursive = TRUE)
+dir.create(file.path("Figures","GBD","Bivariate","mid"), showWarnings = FALSE, recursive = TRUE)
+dir.create(file.path("Figures","GBD","Bivariate","upp"), showWarnings = FALSE, recursive = TRUE)
 
-
-dir.create(file.path("Figures","GBD"), showWarnings = FALSE,recursive=TRUE,)
 # vnt <- "low"; a <- 0; s <- 1; d <- "edx"
 for (vnt in variants){ # low, mid, upp
 	
 	# get the GBD data
-	GBD  <- local(get(load(file.path("Data","Results","GBD",paste0("GBD",vnt,".Rdata")))))
-	setnames(GBD,"ISO","ISO3")
+	GBD  <- local(get(load(file.path("Data", "Results", "GBD", paste0("GBD", vnt, ".Rdata")))))
+	#setnames(GBD,"ISO","ISO3")
 	# merge in GPI
 	GBD  <- merge(GBD,GPIi[,c(2,4,5)])
 	setnames(GBD,"value","GPI")
@@ -47,20 +54,20 @@ for (vnt in variants){ # low, mid, upp
 			for (d in disps){    # sdx, edx
 				
 				# subset for sex and age, fresh
-				GBD0 <- GBD[Sex==s & Age == a]
+				GBD0  <- GBD[Sex==s & Age == a]
 						
 				# change name of disparity measure to "y", for ease
 				setnames(GBD0,d,"y")
 				
 				# remove NAs for correlations
-				GBD0 <- GBD0[!is.na(GPI)]
-				GBD0 <- GBD0[!is.na(y)]
+				GBD0  <- GBD0[!is.na(GPI)]
+				GBD0  <- GBD0[!is.na(y)]
 				
 				# ---------------------
 				namei <- paste0("GPIx",d,"_",a,sx,"_",vnt,".pdf")
-				path  <- file.path("Figures","GBD",namei)
+				path  <- file.path("Figures","GBD","Bivariate",vnt,namei)
 				
-				mod <- lm(y~GPI,data=GBD0)
+				mod   <- lm(y~GPI,data=GBD0)
 				
 				pdf(path)
 				plot(GBD0$GPI, GBD0$y, 
@@ -72,7 +79,7 @@ for (vnt in variants){ # low, mid, upp
 				# ---------------------
 				
 				namei <- paste0("GPIxex",a,sx,"_",vnt,".pdf")
-				path  <- file.path("Figures","GBD",namei)
+				path  <- file.path("Figures","GBD","Bivariate",vnt,namei)
 				
 				mod <- lm(ex~GPI,data=GBD0)
 				
@@ -86,7 +93,7 @@ for (vnt in variants){ # low, mid, upp
 				
 				# ---------------------
 				namei <- paste0(d,"xex",a,sx,"_",vnt,".pdf")
-				path  <- file.path("Figures","GBD",namei)
+				path  <- file.path("Figures","GBD","Bivariate",vnt,namei)
 				
 				mod <- lm(y~ex,data=GBD0)
 				pdf(path)
@@ -99,7 +106,7 @@ for (vnt in variants){ # low, mid, upp
 				
 				# ----------------------
                 namei <- paste0("exx",d,a,sx,"_highlowGPI_",vnt,".pdf")
-                path  <- file.path("Figures","GBD",namei)
+                path  <- file.path("Figures","GBD","Bivariate",vnt,namei)
 
 				
 # break down for extremes

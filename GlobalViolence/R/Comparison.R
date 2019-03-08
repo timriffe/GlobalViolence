@@ -25,6 +25,7 @@ library(DistributionTTD)
 library(DemoDecomp)
 source("R/Functions.R")
 
+dir.create(file.path("Figures","GBD","Decomp"), showWarnings = FALSE, recursive = TRUE)
 # variant
 vnt  <- "mid"
 yr   <- 2017
@@ -54,7 +55,7 @@ maxr     <- max(GPI[year==yr]$rank)
 GPIHIGH  <- GPI[year==yr & rank > (maxr - 25)]$ISO3
 
 GBD  <- local(get(load(file.path("Data","Results","GBD",paste0("GBD",vnt,".Rdata")))))
-setnames(GBD,"ISO","ISO3")
+#setnames(GBD,"ISO","ISO3")
 # merge in GPI
 GBD  <- merge(GBD,GPI[,c(2,4,5,7)])
 setnames(GBD,"value","GPI")
@@ -90,17 +91,17 @@ plot_testing <- function(X,x,sx="Males",ylim=c(-.1,1.7)){
 	X[(Adag+1):111,]  <- NA
 	X[1:10,]          <- NA
 	
-	p            <- colSums(X,na.rm=TRUE) 
-	P            <- round(sum(p[2:3])/sum(p)*100,1)
-	if (P > 100){P <- 100}
+	p               <- colSums(X,na.rm=TRUE) 
+	P               <- round(sum(p[2:3])/sum(p)*100,1)
+	if (P > 100){P  <- 100}
 	
-	X[61:111,]   <- NA
-	X5           <- apply(X,2,groupAges)
-	rownames(X5) <- NULL
+	X[61:111,]      <- NA
+	X5              <- apply(X,2,groupAges)
+	rownames(X5)    <- NULL
 	
-	NEG   <- POS <- X5
-	NEG[NEG > 0] <- 0
-	POS[POS < 0] <- 0
+	NEG   <- POS    <- X5
+	NEG[NEG > 0]    <- 0
+	POS[POS < 0]    <- 0
 	NEG[is.na(NEG)] <- 0
 	POS[is.na(POS)] <- 0
 	
@@ -113,7 +114,7 @@ plot_testing <- function(X,x,sx="Males",ylim=c(-.1,1.7)){
 	title(paste(x,sx,P,"%"))
 }
 
-
+# this is the decomposition code, can take a long time.
 DECsd  <- HIGHVIO[,decomp_sd(.SD),by=list(ISO3,Sex)]
 save(DECsd,file="Data/Results/GBD/DECsd10_HIGHVIO.Rdata")
 
@@ -123,7 +124,7 @@ DECed  <- HIGHVIO[,decomp_edagger(.SD),by=list(ISO3,Sex)]
 #DECedt <- HIGHVIO[,decomp_edagger_temp(.SD,n=50),by=list(ISO3,Sex)]
 
 # plot sd decomp results in flipbooks
-pdf(file.path("Figures","GBD","Decomp_sd_Males_FlipBook.pdf"))
+pdf(file.path("Figures","GBD","Decomp","Decomp_sd_Males_FlipBook.pdf"))
 for (x in unique(DECsd$ISO3)){
 	
 	X  <- as.matrix(DECsd[ISO3==x & Sex == 1,c(4:6)])
@@ -131,7 +132,7 @@ for (x in unique(DECsd$ISO3)){
 }
 dev.off()
 
-pdf(file.path("Figures","GBD","Decomp_sd_Females_FlipBook.pdf"))
+pdf(file.path("Figures","GBD","Decomp","Decomp_sd_Females_FlipBook.pdf"))
 for (x in unique(DECsd$ISO3)){
 	
 	X  <- as.matrix(DECsd[ISO3==x & Sex == 2,c(4:6)])
@@ -140,7 +141,7 @@ for (x in unique(DECsd$ISO3)){
 dev.off()
 
 # plot edagger decomp results in flipbooks
-pdf(file.path("Figures","GBD","Decomp_Edagger_Males_FlipBook.pdf"))
+pdf(file.path("Figures","GBD","Decomp","Decomp_Edagger_Males_FlipBook.pdf"))
 for (x in unique(DECed$ISO3)){
 	
 	X  <- as.matrix(DECed[ISO3==x & Sex == 1,c(4:6)])
@@ -149,7 +150,7 @@ for (x in unique(DECed$ISO3)){
 dev.off()
 
 
-pdf(file.path("Figures","GBD","Decomp_Edagger_Females_FlipBook.pdf"))
+pdf(file.path("Figures","GBD","Decomp","Decomp_Edagger_Females_FlipBook.pdf"))
 for (x in unique(DECed$ISO3)){
 	
 	X  <- as.matrix(DECed[ISO3==x & Sex == 2,c(4:6)])
