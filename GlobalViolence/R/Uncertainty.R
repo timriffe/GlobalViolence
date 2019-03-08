@@ -1,4 +1,4 @@
-
+# Note: now we use data after the Closeout step.
 # Author: tim
 ###############################################################################
 me <- system("whoami",intern=TRUE)
@@ -17,13 +17,17 @@ library(DemoTools)
 library(data.table)
 
 
-dir.create(file.path("Data","Results","GBD"), showWarnings = FALSE, recursive = TRUE)
 
+
+dir.create(file.path("Data","Results","GBD"), showWarnings = FALSE, recursive = TRUE)
 
 # for now just GBD
 variants <- c("low","mid","upp")
 for (i in 1:length(variants)){
-	GBDi <- local(get(load(file.path("Data","Single","GBD",paste0("GBD",variants[i],".Rdata")))))
+	
+	# choose an explicit closeout file
+	GBDi <- local(get(load(file.path("Data","Closeout","GBD",
+									paste0("GBD",variants[i],"_ggompertz_65_90_65.Rdata")))))
 	GBDi[,sdx:=mx2sd(M),.(location,year,Sex)]
 	GBDi[,sdx_no_h:=mx2sd(M-Mh),.(location,year,Sex)]
 	GBDi[,sdx_no_hw:=mx2sd(M-Mh-Mw),.(location,year,Sex)]
@@ -37,21 +41,9 @@ for (i in 1:length(variants)){
 	rm(GBDi);gc()
 }
 
-# ISO Codes for mapping. This should be earlier in processing, move at some point.
-
-ISO <- read.csv(file.path("Data","Inputs","GBD","GBD_ISO3.csv"),stringsAsFactors=FALSE)
-recvec <- ISO[,2]
-names(recvec) <- ISO[,1]
-
-for (i in 1:length(variants)){
-	GBDi <- local(get(load(file.path("Data","Results","GBD",paste0("GBD",variants[i],".Rdata")))))
-	GBDi$ISO3 <- recvec[GBDi$location]
-	save(GBDi, file = file.path("Data","Results","GBD",paste0("GBD",variants[i],".Rdata")))
-	rm(GBDi);gc()
-}
-
-
-
+# Next file, for example Comparison.R
+# end
+# --------------------------------
 
 #GBDi <- local(get(load(file.path("Data","Results","GBD",paste0("GBD",variants[2],".Rdata")))))
 #plot(GBDi[Age == 0]$ex,GBDi[Age == 0]$edx, pch = 16, col = "#00000050",cex=.7)
