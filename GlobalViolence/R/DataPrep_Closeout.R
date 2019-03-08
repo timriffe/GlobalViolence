@@ -44,7 +44,7 @@ GBD.closeout <- function(.SD,
 
 
 dir.create(file.path("Data","Closeout","GBD"),recursive=TRUE,showWarnings=FALSE)
-dir.create(file.path("Figures","GBD","Closeout"),recursive=TRUE,showWarnings=FALSE)
+dir.create(file.path("Figures","GBD","Closeout","ggompertz"),recursive=TRUE,showWarnings=FALSE)
 
 variants <- c("low","mid","upp")
 
@@ -84,12 +84,22 @@ for (i in 1:3){
 							file.path("Data","Closeout","GBD",
 									paste0("GBD",variants[i],"_ggompertz_65_90_65.Rdata")))))
 	
-	pdf(file.path("Figures","GBD","Closeout",paste0("Diagnostic_GBD",variants[i],"_ggompertz_65_90_65.pdf")))
+	pdf(file.path("Figures","GBD","Closeout","ggompertz",paste0("Diagnostic_GBD",variants[i],"_males_ggompertz_65_90_65.pdf")))
 	for (l in 1:length(locs)){
 		M <- acast(GBDi[Sex == 1 & location == locs[l]], Age~year, value.var = "M")
 		matplot(0:110, M, ylim = c(1e-6, 1.5), log = 'y', type = 'l', lty = 1, col = "#00000088",
 				main = locs[l])
 	}
+	dev.off()
+	
+	pdf(file.path("Figures","GBD","Closeout","ggompertz",paste0("Diagnostic_GBD",variants[i],"_females_ggompertz_65_90_65.pdf")))
+	for (l in 1:length(locs)){
+		M <- acast(GBDi[Sex == 2 & location == locs[l]], Age~year, value.var = "M")
+		matplot(0:110, M, ylim = c(1e-6, 1.5), log = 'y', type = 'l', lty = 1, col = "#00000088",
+				main = locs[l])
+	}
+	
+	
 	dev.off()
 	rm(GBDi);gc()
 }
