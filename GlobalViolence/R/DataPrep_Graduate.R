@@ -198,7 +198,7 @@ for (i in 1:3){
 	}
 	dev.off()
 	
-	pdf(file.path("Figures","GBD","Closeout",paste0("Diagnostic_GBD",variants[i],"females_pclm.pdf")))
+	pdf(file.path("Figures","GBD","Closeout",paste0("Diagnostic_GBD",variants[i],"_females_pclm.pdf")))
 	for (l in 1:length(locs)){
 		M <- acast(GBDi[Sex == 2 & location == locs[l]], Age~year, value.var = "M")
 		matplot(0:110, M, ylim = c(1e-6, 1.5), log = 'y', type = 'l', lty = 1, col = "#00000088",
