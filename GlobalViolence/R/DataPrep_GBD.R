@@ -139,7 +139,24 @@ save(UPP, file = file.path("Data","Grouped","GBD","GBDupp.Rdata"))
 rm(UPP);gc()
 rm(Dh,D,Dw,Mh,M,Mw);gc()
 
+
+
+# ISO Codes for mapping. This should be earlier in processing, move at some point.
+ISO           <- read.csv(file.path("Data","Inputs","GBD","GBD_ISO3.csv"),
+		                   stringsAsFactors = FALSE)
+recvec        <- ISO[, 2]
+names(recvec) <- ISO[, 1]
+
+for (i in 1:length(variants)){
+	GBDi      <- local(get(load(file.path("Data","Grouped","GBD",paste0("GBD",variants[i],".Rdata")))))
+	GBDi$ISO3 <- recvec[GBDi$location]
+	save(GBDi, file = file.path("Data","Grouped","GBD",paste0("GBD",variants[i],".Rdata")))
+	rm(GBDi);gc()
+}
+
 # end (still prefer single ages tho)
+# Next step: DataPrep_Graduate.R
+
 # -------
 #
 #LOW <- local(get(load(file.path("Data","Grouped","GBD","GBDlow.Rdata"))))
