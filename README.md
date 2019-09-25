@@ -1,6 +1,6 @@
 # GlobalViolence
 
-Joint work with Tim Riffe, Jose Manuel Aburto, and Vanessa di Lego
+Joint work with Jose Manuel Aburto, Vanessa di Lego, Orsola Torrisi, Ridhi Kashyap, and Tim Riffe
 Presently in initial stages
 
 To get started. Go to the R folder.
