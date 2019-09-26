@@ -1,13 +1,8 @@
 # Author: tim
 ###############################################################################
 
-me <- system("whoami",intern=TRUE)
 
-# change this as needed
-if (me == "tim"){
-	setwd("/home/tim/git/GlobalViolence/GlobalViolence")
-}
-
+library(here)
 library(data.table)
 
 # ------------------------------------ #
@@ -25,10 +20,10 @@ library(data.table)
 # base folders whose names we recycle throughout
 # file.path() used throughout under presumption that 
 # OS differences in file seperators taken into account
-who.folder <- file.path("Data","Inputs","WHO")
-gbd.folder <- file.path("Data","Inputs","GBD")
-wpp.folder <- file.path("Data","Inputs","WPP")
-ihme.folder <- file.path("Data","Inputs","IHME")
+who.folder  <- here("GlobalViolence","Data","Inputs","WHO")
+gbd.folder  <- here("GlobalViolence","Data","Inputs","GBD")
+wpp.folder  <- here("GlobalViolence","Data","Inputs","WPP")
+ihme.folder <- here("GlobalViolence","Data","Inputs","IHME")
 # make inout directories:
 dir.create(who.folder, showWarnings = FALSE, recursive = TRUE)
 dir.create(gbd.folder, showWarnings = FALSE, recursive = TRUE)
@@ -49,21 +44,21 @@ dir.create(ihme.folder, showWarnings = FALSE, recursive = TRUE)
 
 # download
 download.file(url = "https://www.who.int/healthinfo/statistics/Morticd10_part1.zip?ua=1",
-		destfile = file.path(who.folder,"Morticd10_part1.zip"))
+		destfile = file.path(who.folder, "Morticd10_part1.zip"))
 download.file(url = "https://www.who.int/healthinfo/statistics/Morticd10_part2.zip?ua=1",
-		destfile = file.path(who.folder,"Morticd10_part2.zip"))
+		destfile = file.path(who.folder, "Morticd10_part2.zip"))
 
 # unzip
-unzip(file.path(who.folder,"Morticd10_part1.zip"), exdir = who.folder)
-unzip(file.path(who.folder,"Morticd10_part2.zip"), exdir = who.folder)
+unzip(here(who.folder,"Morticd10_part1.zip"), exdir = who.folder)
+unzip(here(who.folder,"Morticd10_part2.zip"), exdir = who.folder)
 
 # read in fast as data.table
 WHO1 <- fread(file.path(who.folder, "Morticd10_part1"))
 WHO2 <- fread(file.path(who.folder, "Morticd10_part2"))
-WHO  <- rbind(WHO1,WHO2)
+WHO  <- rbind(WHO1, WHO2)
 
 # save as single R fil
-save(WHO, file=file.path(who.folder,"WHO.Rdata"))
+save(WHO, file = file.path(who.folder, "WHO.Rdata"))
 
 # remove objects from memory for now:
 rm(WHO1, WHO2, WHO)
@@ -81,8 +76,8 @@ download.file(url = "http://terrance.who.int/mediacentre/data/ghe/ghe2016_deaths
 		destfile = file.path(who.folder,"ghe2016_deaths_country_fmle.zip"))
 
 # unzip
-unzip(file.path(who.folder,"ghe2016_deaths_country_mle.zip"),exdir=who.folder)
-unzip(file.path(who.folder,"ghe2016_deaths_country_fmle.zip"),exdir=who.folder)
+unzip(here(who.folder,"ghe2016_deaths_country_mle.zip"),exdir=who.folder)
+unzip(here(who.folder,"ghe2016_deaths_country_fmle.zip"),exdir=who.folder)
 
 # read in:
 WHOF <- fread(file.path(who.folder,"ghe2016_deaths_country_fmle.csv"))
@@ -91,7 +86,7 @@ WHOM <- fread(file.path(who.folder,"ghe2016_deaths_country_mle.csv"))
 # save as single R file
 WHO  <- rbind(WHOF, WHOM)
 
-save(WHO, file=file.path(who.folder,"WHO_GHE.Rdata"))
+save(WHO, file = file.path(who.folder, "WHO_GHE.Rdata"))
 
 # remove objects from memory for now:
 rm(WHOF, WHOM, WHO)
@@ -152,16 +147,16 @@ links <- paste0("http://s3.healthdata.org/gbd-api-2017-public/7937bbf8510f8dd0f9
 
 # now do bulk download like so
 for (i in 1:9){
-	this.name <- file.path(gbd.folder,paste0("GBD",i,".zip"))
+	this.name <- file.path(gbd.folder, paste0("GBD", i, ".zip"))
 	download.file(url = links[i],
 			# simplify names of zip files...
 			destfile = this.name)
 	# and unpack them
-	unzip(file.path(gbd.folder,this.name),exdir=gbd.folder)
+	unzip(file.path(gbd.folder, this.name), exdir = gbd.folder)
 }
 
 # get csv names
-gbdcsvs <- list.files(gbd.folder,pattern=".csv")
+gbdcsvs <- list.files(gbd.folder, pattern = ".csv")
 
 # read and rbind in one go
 GBD <- do.call("rbind", lapply(file.path(gbd.folder,gbdcsvs), fread))
@@ -202,18 +197,18 @@ links <- paste0("https://cloud.ihme.washington.edu/index.php/s/2JLHyPXCnZQyd9Q/d
 
 # now do bulk download like so
 for (i in 1:length(links)){
-			this.name <- file.path(ihme.folder,paste0("IHME",i,".zip"))
+			this.name <- here(ihme.folder,paste0("IHME",i,".zip"))
 			download.file(url = links[i],
 					# simplify names of zip files...
 					destfile = this.name)
 #			# and unpack them
-			unzip(this.name,exdir=ihme.folder)
+			unzip(this.name, exdir = ihme.folder)
 }		
 		
 # and read into single file like so:
 
 # get csv names
-ihmecsvs <- list.files(ihme.folder,pattern=".CSV")
+ihmecsvs <- list.files(ihme.folder, pattern = ".CSV")
 
 # read and rbind in one go
 
@@ -228,15 +223,15 @@ for (b in 1:8){
 	IHMEb  <- do.call("rbind", lapply(file.path(ihme.folder,ihmecsvs[fromi[b]:toi[b]]), fread))
 	qx <- IHMEb[metric_id == 8]
 	ex <- IHMEb[metric_id == 5]
-	save(qx,file=file.path(ihme.folder,paste0("IHMEqx",b,".Rdata")))
-	save(ex,file=file.path(ihme.folder,paste0("IHMEex",b,".Rdata")))
+	save(qx, file = file.path(ihme.folder, paste0("IHMEqx", b, ".Rdata")))
+	save(ex, file = file.path(ihme.folder, paste0("IHMEex", b, ".Rdata")))
 	rm(IHMEb,qx,ex)
 	gc()
 }
 
 # then one at a time, we rbind the 1-8 files, but separately for qx and ex
 IHMEqx  <- do.call("rbind", 
-		lapply(file.path(ihme.folder,paste0("IHMEqx",1:8,".Rdata")), 
+		lapply(here(ihme.folder, paste0("IHMEqx", 1:8, ".Rdata")), 
 				# anonymous function
 				function(x){
 					# need local instance of object in here only to rbind
@@ -244,20 +239,20 @@ IHMEqx  <- do.call("rbind",
 						})
 		)
 # save out
-save(IHMEqx,file=file.path(ihme.folder,"IHMEqx.Rdata"))
+save(IHMEqx, file = file.path(ihme.folder, "IHMEqx.Rdata"))
 rm(IHMEqx)
 gc()
 
 # may as well take time to do the same for IHME ex as a check
 IHMEex  <- do.call("rbind", 
-		lapply(file.path(ihme.folder,paste0("IHMEex",1:8,".Rdata")), 
+		lapply(file.path(ihme.folder, paste0("IHMEex", 1:8, ".Rdata")), 
 				# anonymous function
 				function(x){
 					# need local instance of object in here only to rbind
 					local(get(load(x)))
 				})
 )
-save(IHMEex,file=file.path(ihme.folder,"IHMEex.Rdata"))
+save(IHMEex, file = file.path(ihme.folder, "IHMEex.Rdata"))
 rm(IHMEex)
 gc()
 
@@ -297,4 +292,6 @@ save(WPPpop, file = file.path(wpp.folder,"WPPpop.Rdata"))
 rm(WPPpop);gc()
 #
 file.remove(file.path(wpp.folder,c("WPPpop.csv","WPPLT.csv")))
+
+# end
 # so far that's it, might still want WPP denominators.
