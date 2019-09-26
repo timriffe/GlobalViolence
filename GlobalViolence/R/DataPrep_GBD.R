@@ -2,157 +2,76 @@
 # Author: tim
 ###############################################################################
 
-me <- system("whoami",intern=TRUE)
-
-# augment this as needed
-if (me == "tim"){
-	setwd("/home/tim/git/GlobalViolence/GlobalViolence")
-}
-if (me == "sam\\jmaburto"){
-  setwd("C:/Users/jmaburto/Documents/GitHub/GlobalViolence/GlobalViolence/")
-}
-
-
+library(here)
 library(data.table)
-gbd.folder <- file.path("Data","Inputs","GBD")
-
-if (me == "sam\\jmaburto"){
-  gbd.folder <- 'C:/Users/jmaburto/Documents/AburtoDiLegoRiffe_Data/Inputs/GBD'
-}
+gbd.folder <- here("GlobalViolence","Data","Inputs","GBD")
 
 
-dir.create(file.path("Data","Grouped","GBD"), showWarnings = FALSE, recursive = TRUE)
+dir.create(here("GlobalViolence","Data","Grouped","GBD"), showWarnings = FALSE, recursive = TRUE)
 
 
-GBD <- local(get(load(file.path(gbd.folder,"GBD.Rdata"))))
-GBD$Sex <- ifelse(GBD$sex == "Male",1,2)
-GBD[,c("sex","measure"):=NULL];gc()
+GBD     <- readRDS(file.path(gbd.folder,"GBD.rds"))
 
 # remove Percent, not needed now.
-GBD <- GBD[metric != "Percent"];gc()
+GBD <- GBD[metric_name != "Percent"]; gc()
 
-GBD[location=="Estonia" & year == 1990 & Sex == 1 & cause == "All causes" & metric == "Number"]$age
+# recode age
 rmages <- c("Under 5","Early Neonatal","Late Neonatal","Post Neonatal",
 		"15-49 years","80 plus","All Ages","5-14 years","15-49 years",
-		"50-69 years","70+ years","<20 years","10 to 24","10 to 54","Age-standardized")
+		"50-69 years","70+ years","<20 years","10 to 24","10 to 54","Age-standardized","<70 years")
 
-GBD <- GBD[!age%in%rmages];gc()
+GBD <- GBD[!age_name%in%rmages];gc()
+recvec <- c("<1 year" = 0, "1 to 4" = 1, "5 to 9" = 5, "10 to 14" = 10, 
+		"15 to 19" = 15, "20 to 24" = 20, "25 to 29" = 25, "30 to 34" = 30, 
+		"35 to 39" = 35, "40 to 44" = 40, "45 to 49" = 45, "50 to 54" = 50, 
+		"55 to 59" = 55, "60 to 64" = 60, "65 to 69" = 65, "70 to 74" = 70, 
+		"75 to 79" = 75, "80 to 84" = 80, "85 to 89" = 85, "90 to 94" = 90, 
+		"95 plus" = 95)
+GBD$age <- recvec[GBD$age_name]
 
-
-
-#ages <- sort(unique(GBD$age))
-#recvec <- c(0,1,seq(5,95,by=5))
-#names(recvec) <- ages[c(4,3,13,1,2,5:12,14:21)]
-#dput(recvec)
-recvec <- c(`<1 year` = 0, `1 to 4` = 1, `5 to 9` = 5, `10 to 14` = 10, 
-		`15 to 19` = 15, `20 to 24` = 20, `25 to 29` = 25, `30 to 34` = 30, 
-		`35 to 39` = 35, `40 to 44` = 40, `45 to 49` = 45, `50 to 54` = 50, 
-		`55 to 59` = 55, `60 to 64` = 60, `65 to 69` = 65, `70 to 74` = 70, 
-		`75 to 79` = 75, `80 to 84` = 80, `85 to 89` = 85, `90 to 94` = 90, 
-		`95 plus` = 95)
-
-GBD$Age <- recvec[GBD$age]
-GBD[,c("age"):=NULL];gc()
+GBD[,c("age_name","age_id"):=NULL];gc()
 
 # More reshaping to match GHE: 3 files with MID, LOW, UPP.
 # Can use Rate and Number to recuperate exposure.
 
 # group state violence and terrorism
-#recvec <- c("a","w","h","w")
-#names(recvec)<- unique(GBD$cause)
-#dput(recvec)
-recvec <- c(`All causes` = "a", `Conflict and terrorism` = "w", `Interpersonal violence` = "h", 
-		`Executions and police conflict` = "w")
-GBD$cause <- recvec[GBD$cause]
+recvec <- c("All causes" = "a", "Conflict and terrorism" = "w", "Interpersonal violence" = "h", 
+		"Executions and police conflict" = "w")
+GBD$cause <- recvec[GBD$cause_name]
+
+# keep: location, metric, year, Sex, cause, Age
+setnames(GBD,old = c("sex_id","location_name","metric_name"),c("sex","location","metric"))
 
 
+# reset names for metric:
+recvec = c("Number" = "D", "Rate" = "M")
+GBD$metric <- recvec[GBD$metric]
 # now group causes
-GBD <- GBD[,.(val=sum(val),upper=sum(upper),lower=sum(lower)),
-		by=.(metric,location,year,Sex,cause,Age)];gc()
-
-table(GBD$cause)
-# set order for clean chunking
-setorder(GBD,metric,location,year,Sex,cause,Age)
-
-NN  <- GBD[metric == "Number"]
-GBD <- GBD[metric == "Rate"];gc()
-dim(GBD);dim(NN)
-
-# rates split
-M   	<- GBD[cause == "a"]
-GBD 	<- GBD[cause != "a"]
-Mw  	<- GBD[cause == "w"]
-Mh 		<- GBD[cause != "w"];gc() 
-rm(GBD);gc()
-# counts split
-D   	<- NN[cause == "a"]
-NN   	<- NN[cause != "a"]
-Dw  	<- NN[cause == "w"]
-Dh   	<- NN[cause != "w"];gc() # Dh
-rm(NN);gc()
-# -----------------------
-# MID, LOW, UPP
-MID 	<- copy(D)
-MID[,c("upper","lower","metric"):=NULL ];gc()
-setnames(MID,"val","D")
-MID$Dh 	<- Dh$val
-MID$Dw 	<- Dw$val
-MID$M 	<- M$val / 1e5
-MID$Mh 	<- Mh$val / 1e5
-MID$Mw 	<- Mw$val / 1e5
-
-Dh[,c("val"):=NULL];D[,c("val"):=NULL];Dw[,c("val"):=NULL]
-Mh[,c("val"):=NULL];M[,c("val"):=NULL];Mw[,c("val"):=NULL]
-gc()
-
-#DemoTools::LTabr(nMx=MID$M[1:21]/1e5,Age=c(0,1,seq(5,95,by=5)))
-
-save(MID, file = file.path("Data","Grouped","GBD","GBDmid.Rdata"))
-rm(MID);gc()
-#-----
-# LOW
-LOW 	<- copy(D)
-LOW[,c("upper","metric"):=NULL ];gc()
-setnames(LOW,"lower","D")
-LOW$Dh 	<- Dh$lower
-LOW$Dw 	<- Dw$lower
-LOW$M 	<- M$lower / 1e5
-LOW$Mh 	<- Mh$lower / 1e5
-LOW$Mw 	<- Mw$lower / 1e5
-
-Dh[,c("lower"):=NULL];D[,c("lower"):=NULL];Dw[,c("lower"):=NULL]
-Mh[,c("lower"):=NULL];M[,c("lower"):=NULL];Mw[,c("lower"):=NULL]
-gc()
-save(LOW, file = file.path("Data","Grouped","GBD","GBDlow.Rdata"))
-rm(LOW);gc()
-#-----
-# LOW
-UPP 	<- copy(D)
-UPP[,c("metric"):=NULL ];gc()
-setnames(UPP,"upper","D")
-UPP$Dh 	<- Dh$upper
-UPP$Dw 	<- Dw$upper
-UPP$M 	<- M$upper / 1e5
-UPP$Mh 	<- Mh$upper / 1e5
-UPP$Mw 	<- Mw$upper / 1e5
-save(UPP, file = file.path("Data","Grouped","GBD","GBDupp.Rdata"))
-rm(UPP);gc()
-rm(Dh,D,Dw,Mh,M,Mw);gc()
-
-
+GBD <- GBD[, .(val = sum(val), upper = sum(upper) ,lower = sum(lower)),
+		by = .(metric, location, year, sex, cause, age)];gc()
 
 # ISO Codes for mapping. This should be earlier in processing, move at some point.
-ISO           <- read.csv(file.path("Data","Inputs","GBD","GBD_ISO3.csv"),
-		                   stringsAsFactors = FALSE)
+ISO           <- read.csv(here("GlobalViolence","Data","Inputs","GBD","GBD_ISO3.csv"),
+                          stringsAsFactors = FALSE)
 recvec        <- ISO[, 2]
 names(recvec) <- ISO[, 1]
+GBD$ISO3      <- recvec[GBD$location]
 
-for (i in 1:length(variants)){
-	GBDi      <- local(get(load(file.path("Data","Grouped","GBD",paste0("GBD",variants[i],".Rdata")))))
-	GBDi$ISO3 <- recvec[GBDi$location]
-	save(GBDi, file = file.path("Data","Grouped","GBD",paste0("GBD",variants[i],".Rdata")))
-	rm(GBDi);gc()
-}
+# set order for clean chunking
+setorder(GBD,metric,location,year,sex,cause,age)
+
+MID <- dcast(GBD, ISO3 + location + year + sex + age ~ metric + cause, value.var = "val")
+MID <- MID[,.(M_a = M_a/1e5, M_h = M_h/1e5, M_w = M_w/1e5, D_a = D_a, D_h = D_h, D_w = D_w),by=.(ISO3,location,year,sex,age)]
+saveRDS(MID, file = file.path("GlobalViolence","Data","Grouped","GBD","GBDmid.rds")) ; rm(MID) ; gc()
+
+UPP <- dcast(GBD, location + year + sex + age ~ metric + cause, value.var = "upper")
+UPP <- UPP[,.(M_a = M_a/1e5, M_h = M_h/1e5, M_w = M_w/1e5, D_a = D_a, D_h = D_h, D_w = D_w),by=.(ISO3,location,year,sex,age)]
+saveRDS(UPP, file = file.path("GlobalViolence","Data","Grouped","GBD","GBDupp.rds")) ; rm(UPP) ; gc()
+
+LOW <- dcast(GBD, location + year + sex + age ~ metric + cause, value.var = "lower")
+LOW <- LOW[,.(M_a = M_a/1e5, M_h = M_h/1e5, M_w = M_w/1e5, D_a = D_a, D_h = D_h, D_w = D_w),by=.(ISO3,location,year,sex,age)]
+saveRDS(LOW, file = file.path("GlobalViolence","Data","Grouped","GBD","GBDlow.rds")) ; rm(LOW) ; gc()
+
 
 # end (still prefer single ages tho)
 # Next step: DataPrep_Graduate.R
