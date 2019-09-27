@@ -6,39 +6,46 @@
 # data (MID, LOW, UPP), but later it'll be expanded as needed 
 # for the comparison datasets.
 
-me <- system("whoami",intern=TRUE)
-
-# augment this as needed
-if (me == "tim"){
-	setwd("/home/tim/git/GlobalViolence/GlobalViolence")
-}
-if (me == "sam\\jmaburto"){
-  setwd("C:/Users/jmaburto/Documents/GitHub/GlobalViolence/GlobalViolence/")
-}
-
+library(here)
 #install.packages('ungroup')
 library(data.table)
 library(ungroup)
 library(DemoTools)
 library(MortalitySmooth)
-ifelse(me == "tim", library(parallel),library(parallelsugar))
-
+library(reshape2)
+library(magrittr)
+# TR: any other cases?
+if(.Platform$OS.type == "unix"){
+  library(parallel)
+} 
+if(.Platform$OS.type == "windows"){
+  library(parallelsugar)
+} 
 
 # use this for all-cause mortality graduation.
-GBD.pclm <- function(.SD, omega = 110, mort = "all"){
+GBD.pclm <- function(.SD, omega = 110, mort = "a"){
 	
 	# determine which variables to use
-	mtype  <- ifelse(mort == "all","",mort)
-	Dx     <- paste0("D",mtype)
-	Mx     <- paste0("M",mtype)
+	Dx     <- paste0("D",mort)
+	Mx     <- paste0("M",mort)
 	
-	# siphen off vectors to use, throw out IMR
-	x      <- .SD$Age[-1]
+	# siphon off vectors to use, throw out IMR
+	x      <- .SD$age[-1]
 	y      <- .SD[[Dx]][-1]
 	m      <- .SD[[Mx]][-1]
 	
+	n      <- nrow(.SD)
+	
+	if (all(is.na(m))){
+	  return(rep(NA,111))
+	}
 	# just retain IMR, no problem
 	m0     <- .SD[[Mx]][1]
+	
+	if (any(is.na(y)) | any(is.na(m))){
+	  rmind <- is.na(y) | is.na(x)
+	}
+	
 	
 	# how wide open interval, for practical purposes
 	nlast  <- omega - max(x) + 1
@@ -55,10 +62,10 @@ GBD.pclm <- function(.SD, omega = 110, mort = "all"){
 	
 	# split counts using split exposure as offset returns rates
 	M      <- pclm(x = x, 
-			       y = y / fac, 
-				   nlast = nlast, 
-				   offset = off1 / fac, 
-				   control = list(lambda = 1))$fitted
+			           y = y / fac, 
+				         nlast = nlast, 
+				         offset = off1 / fac, 
+				         control = list(lambda = 1))$fitted
 	M[is.nan(M)] <- 0
 	
 	# append to saved IMR
@@ -69,20 +76,24 @@ GBD.pclm <- function(.SD, omega = 110, mort = "all"){
 # use this for homicide and 'other violence' graduation
 GBD.mono.ms <- function(.SD, omega=110,lambda=.1,mort="h"){
 	
-	# form relevant variable names
-	mtype  <- ifelse(mort == "all","",mort)
-	Dx     <- paste0("D",mtype)
-	Mx     <- paste0("M",mtype)
+  # determine which variables to use
+  Dx     <- paste0("D",mort)
+  Mx     <- paste0("M",mort)
 	
 	# siphen off vectors
-	x      <- .SD$Age
+	x      <- .SD$age
 	y      <- .SD[[Dx]]
 	m      <- .SD[[Mx]]
 	
 	# backstop in case no counts
+	if (all(is.na(m))){
+	  return(rep(NA,111))
+	}
+	
 	if (all(m == 0)){
 		return(rep(0,111))
 	}
+
 	
 	# don't touch infant mort. Derivative too high, messes up splines
 	# of all kinds. Until Carl Schmertmann boxes up his nifty solution.
@@ -149,7 +160,7 @@ GBD.chunk <- function(.SD,omega=110){
 	# graduate the 3 mortality vectors.
 	# I really wish I knew of a way to do a compositional graduation
 	# of all 3 at once...
-	M  <- suppressWarnings(GBD.pclm(.SD, omega = 110,mort = "all"))
+	M  <- suppressWarnings(GBD.pclm(.SD, omega = 110,mort = "a"))
 	Mh <- GBD.mono.ms(.SD, omega = 110, mort = "h")
 	Mw <- GBD.mono.ms(.SD, omega = 110, mort = "w")
 	# Mh + Mw are here not guaranteed to be < M,
@@ -157,50 +168,55 @@ GBD.chunk <- function(.SD,omega=110){
 	# they are most often orders of magnitude different
 	
 	data.table(data.frame(
+	        ISO3 = rep(.SD$ISO3[1],111),
 					location = rep(.SD$location[1], 111),
 					year = rep(.SD$year[1], 111),
-					Sex = rep(.SD$Sex[1], 111),
-					Age = 0:110,
-					M = M, Mh = Mh, Mw = Mw))
+					sex = rep(.SD$sex[1], 111),
+					age = 0:110,
+					Ma = M, Mh = Mh, Mw = Mw))
 }
 
+dir.create(here("GlobalViolence","Data","Single","GBD"), showWarnings = FALSE, recursive = TRUE)
 
-dir.create(file.path("Data","Single","GBD"), showWarnings = FALSE, recursive = TRUE)
-
-gbd.folder <- file.path("Data","Grouped","GBD")
+gbd.folder <- here("GlobalViolence","Data","Grouped","GBD")
 
 variants <- c("low","mid","upp")
 
-# takes a long time to run
+# takes a long time to run, approaches 12Gb memory a bit. If you don't have >= 12Gb mem,
+# you can change this:
+# mc.cores = (detectCores() - 1)
+# to use fewer cores. It'll work even if mc.cores is 1 or 2.
+
 for (i in 1:length(variants)){
-	GBDi <- local(get(load(file.path("Data","Grouped","GBD",paste0("GBD",variants[i],".Rdata")))))
-	sdl  <- split(GBDi,list(GBDi$location,GBDi$Sex,GBDi$year))
-	sdL  <- mclapply(sdl, GBD.chunk, mc.cores = 3)
-	GBDi <- rbindlist(sdL)
-	rm(sdl);gc()
-	save(GBDi,file=file.path("Data","Single","GBD",paste0("GBD",variants[i],".Rdata")))
-	rm(GBDi);gc()
+  GBDi <- readRDS(file.path(gbd.folder, paste0("GBD",variants[i],".rds"))) 
+    GBDi %>% split(list(GBDi$location,GBDi$sex,GBDi$year), drop = TRUE) %>% 
+	  mclapply(GBD.chunk, mc.cores = (detectCores() - 1)) %>% 
+	  rbindlist() %>% 
+	  saveRDS(file = here("GlobalViolence","Data","Single","GBD",paste0("GBD",variants[i],".rds")))
+	gc()
 }
 
 # these are not 'finalized' still, as the pclm closeout isn't demographically informed, 
 # and can go haywire. Next step DataPrep_Closeout.R
 dir.create(file.path("Figures","GBD","Closeout","pclm"), showWarnings = FALSE, recursive = TRUE)
+
+locs<- readRDS(file.path(gbd.folder, paste0("GBD",variants[i],".rds"))) %>%
+  pull(location) %>% unique()
 # diagnostic flipbooks
 for (i in 1:3){
-	GBDi <-  local(get(load(
-							file.path("Data","Single","GBD",paste0("GBD",variants[i],".Rdata")))))
+	GBDi <- readRDS(here("GlobalViolence","Data","Single","GBD",paste0("GBD",variants[i],".rds")))
 	
-	pdf(file.path("Figures","GBD","Closeout","pclm",paste0("Diagnostic_GBD",variants[i],"males_pclm.pdf")))
+	pdf(here("GlobalViolence","Figures","GBD","Closeout","pclm",paste0("Diagnostic_GBD",variants[i],"males_pclm.pdf")))
 	for (l in 1:length(locs)){
-		M <- acast(GBDi[Sex == 1 & location == locs[l]], Age~year, value.var = "M")
+		M <- acast(GBDi[sex == 1 & location == locs[l]], age~year, value.var = "Ma")
 		matplot(0:110, M, ylim = c(1e-6, 1.5), log = 'y', type = 'l', lty = 1, col = "#00000088",
 				main = locs[l])
 	}
 	dev.off()
 	
-	pdf(file.path("Figures","GBD","Closeout","pclm",paste0("Diagnostic_GBD",variants[i],"_females_pclm.pdf")))
+	pdf(here("GlobalViolence","Figures","GBD","Closeout","pclm",paste0("Diagnostic_GBD",variants[i],"_females_pclm.pdf")))
 	for (l in 1:length(locs)){
-		M <- acast(GBDi[Sex == 2 & location == locs[l]], Age~year, value.var = "M")
+		M <- acast(GBDi[sex == 2 & location == locs[l]], age~year, value.var = "Ma")
 		matplot(0:110, M, ylim = c(1e-6, 1.5), log = 'y', type = 'l', lty = 1, col = "#00000088",
 				main = locs[l])
 	}

@@ -6,9 +6,7 @@ library(here)
 library(data.table)
 gbd.folder <- here("GlobalViolence","Data","Inputs","GBD")
 
-
 dir.create(here("GlobalViolence","Data","Grouped","GBD"), showWarnings = FALSE, recursive = TRUE)
-
 
 GBD     <- readRDS(file.path(gbd.folder,"GBD.rds"))
 
@@ -57,19 +55,19 @@ recvec        <- ISO[, 2]
 names(recvec) <- ISO[, 1]
 GBD$ISO3      <- recvec[GBD$location]
 
-# set order for clean chunking
-setorder(GBD,metric,location,year,sex,cause,age)
-
 MID <- dcast(GBD, ISO3 + location + year + sex + age ~ metric + cause, value.var = "val")
 MID <- MID[,.(M_a = M_a/1e5, M_h = M_h/1e5, M_w = M_w/1e5, D_a = D_a, D_h = D_h, D_w = D_w),by=.(ISO3,location,year,sex,age)]
+setnames(MID, colnames(MID), new = gsub(pattern = "_", replace = "", colnames(MID)))
 saveRDS(MID, file = file.path("GlobalViolence","Data","Grouped","GBD","GBDmid.rds")) ; rm(MID) ; gc()
 
-UPP <- dcast(GBD, location + year + sex + age ~ metric + cause, value.var = "upper")
+UPP <- dcast(GBD, ISO3 + location + year + sex + age ~ metric + cause, value.var = "upper")
 UPP <- UPP[,.(M_a = M_a/1e5, M_h = M_h/1e5, M_w = M_w/1e5, D_a = D_a, D_h = D_h, D_w = D_w),by=.(ISO3,location,year,sex,age)]
+setnames(UPP, colnames(UPP), new = gsub(pattern = "_", replace = "", colnames(UPP)))
 saveRDS(UPP, file = file.path("GlobalViolence","Data","Grouped","GBD","GBDupp.rds")) ; rm(UPP) ; gc()
 
-LOW <- dcast(GBD, location + year + sex + age ~ metric + cause, value.var = "lower")
+LOW <- dcast(GBD, ISO3 + location + year + sex + age ~ metric + cause, value.var = "lower")
 LOW <- LOW[,.(M_a = M_a/1e5, M_h = M_h/1e5, M_w = M_w/1e5, D_a = D_a, D_h = D_h, D_w = D_w),by=.(ISO3,location,year,sex,age)]
+setnames(LOW, colnames(LOW), new = gsub(pattern = "_", replace = "", colnames(LOW)))
 saveRDS(LOW, file = file.path("GlobalViolence","Data","Grouped","GBD","GBDlow.rds")) ; rm(LOW) ; gc()
 
 

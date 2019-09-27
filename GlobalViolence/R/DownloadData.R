@@ -144,11 +144,12 @@ file.remove(file.path(who.folder, fls))
 # EASIER:
 # or notice that the links are the same except the last digit, find the pattern
 # YOU NEED TO CHANGE THIS PATH 
+
 links <- paste0("http://s3.healthdata.org/gbd-api-2017-public/e2c073307b2615cda33b73350273cd9e_files/IHME-GBD_2017_DATA-e2c07330-",
-		1:9,".zip")
+		1:10,".zip")
 
 # now do bulk download like so
-for (i in 1:9){
+for (i in 1:length(links)){
 	this.name <- file.path(gbd.folder, paste0("GBD", i, ".zip"))
 	 download.file(url = links[i],
 	 		# simplify names of zip files...
