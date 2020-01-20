@@ -1,0 +1,5 @@
+##to update my gtihub from Tim's
+ git checkout master
+ git pull https://github.com/timriffe/GlobalVilence
+ git push origin master
+ 

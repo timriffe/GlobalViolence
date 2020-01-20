@@ -1,0 +1,846 @@
+\documentclass[xcolor={dvipsnames}]{beamer}
+
+\usetheme{Malmoe}
+\usecolortheme{seagull}
+\usepackage[]{natbib}
+\usepackage{textpos}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{multirow}
+\usepackage{framed}
+\usepackage{schemata}
+\setbeamertemplate{navigation symbols}{}
+\usepackage[english]{babel}
+\usepackage{animate}
+\usepackage{graphics}
+\usepackage{fontawesome}
+
+
+\definecolor{lightblue}{rgb}{0.145,0.6666,1} % Defines the color used for content box headers
+\definecolor{Red}{rgb}{0.9,0.15,0}
+\definecolor{Blue}{RGB}{55,126,184}
+\definecolor{Green}{RGB}{77,175,74}
+\definecolor{White}{RGB}{255,255,255}
+\definecolor{Lightgray}{rgb}{0.86,0.86,0.86}
+
+\setbeamertemplate{footline}
+{
+	\leavevmode%
+	\hbox{%
+		\begin{beamercolorbox}[wd=.50\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%
+			\usebeamerfont{author in head/foot}\insertshortauthor%% \beamer@ifempty{\insertshortinstitute}{}{(\insertshortinstitute)}
+		\end{beamercolorbox}%
+%		\hskip2pt%
+		\begin{beamercolorbox}[wd=.50\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+			\usebeamerfont{title in head/foot}\insertshorttitle~~~~~~~~~~~~~~~~~~~~~~~~~~\insertframenumber
+		\end{beamercolorbox}%
+	}%
+	\vskip0pt%
+}
+\makeatother
+
+\title[Lifetime uncertainty and violence]{}
+
+\subtitle{\large{\textsc{The global contribution of violence to lifetime uncertainty}}\\$\,$\\}
+
+
+\author[JM Aburto. CED November 2019]
+{
+	\vspace{-0.5cm}
+	\texorpdfstring{
+		\begin{columns}
+			\column{.9\linewidth}
+			\centering
+			\Large{Jos\'{e} Manuel Aburto}\\
+			$\,$\\
+			\includegraphics[scale=0.2]{Figures/SDU_Logo.jpg}\\     
+				\vspace{0.5cm}
+						\includegraphics[scale=0.2]{Figures/MPIDR.PNG}     
+		\end{columns}
+	}
+	{}
+}
+
+\date[]{ November 2019}
+
+\beamertemplatenavigationsymbolsempty
+\begin{document}
+
+
+\begin{frame}[plain]
+	\titlepage
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+	\LARGE{
+		\begin{itemize}
+		
+			\item<1-> \textbf{Latin America} is the world's most \textbf{violent} region.
+		
+			\item<2-> This region has the \textbf{highest} homicide rate in the world (16.3 per 100,000).
+		
+    	    \item<3->  \textbf{Upsurge} of violence in the new century.
+		
+		\end{itemize}
+		
+	}
+
+\end{frame}
+
+
+\begin{frame}
+	\begin{center}
+		\Large{In Mexico: homicides declined in 2000-2005}
+	\end{center}
+
+	\hspace*{-1cm}   
+	\includegraphics[scale=.31]{Figures/Fig2_1}
+	
+	\begin{center}
+		\color{white}	\Large{\textbf{In 2006-2012 rates doubled} (9.3 $\longrightarrow$ 18.6).}
+	\end{center}	
+
+\end{frame}
+
+
+\begin{frame}
+	\begin{center}
+		\Large{In Mexico: homicides declined in 2000-2005}
+	\end{center}
+
+	
+	\hspace*{-1cm}   
+	\includegraphics[scale=.31]{Figures/Fig2_2}
+	
+	\begin{center}
+		\Large{\textbf{In 2005-2010 rates more than doubled}\\
+		 (9.5 $\longrightarrow$ 22).}
+	\end{center}	
+
+\end{frame}
+
+
+
+\begin{frame}
+	\begin{center}
+		\Large{	As a result, male life expectancy \textbf{stagnated} in the first decade of the new century ($\backsim 	$71y)}
+	\end{center}
+		
+	\begin{center}
+		\includegraphics[scale=.65]{Figures/Fig_1}
+	\end{center}
+
+	\tiny{Canudas-Romo et al 2014. Journal of Epidemiology and Community Health}
+	
+\end{frame}
+
+
+
+\begin{frame}
+	\huge{
+	\begin{center}
+		\bf{Why did Mexico become so violent?}
+	\end{center}
+	}
+	
+	\pause
+	
+	\LARGE{
+		\begin{itemize}
+		
+			\item \textbf{Competition} between drug cartels for territory. \pause
+		
+			\item \textbf{Enforcement operations} trying to mitigate drug trafficking after 2005. \pause
+		
+    	    \item \textbf{Increased profitability} in the drug-trade flow with United States. 
+		
+		\end{itemize}
+		
+	\tiny{Sources: Rios 2013, Dell 2015, Castillo et al 2014}
+	}
+
+\end{frame}
+
+
+
+\begin{frame}
+
+	\begin{center}
+		\includegraphics[scale=.3]{Figures/Mexico1}
+	\end{center}
+				
+\end{frame}
+
+
+
+
+\begin{frame}
+	\Large{Changes in male life expectancy at birth by state}
+
+
+	\begin{center}
+		\includegraphics[scale=.66]{Figures/Changes_states_1}
+	\end{center}
+	
+	\tiny{Aburto, Beltr\'an-S\'anchez, Garc\'ia-Guerrero \& Canudas-Romo 2016. Health Affairs}				
+\end{frame}
+
+\begin{frame}
+	\Large{Changes in male life expectancy at birth by state}
+
+
+	\begin{center}
+		\includegraphics[scale=.66]{Figures/Changes_states_2}
+	\end{center}
+	
+	\tiny{Aburto, Beltr\'an-S\'anchez, Garc\'ia-Guerrero \& Canudas-Romo 2016. Health Affairs}				
+\end{frame}
+
+
+
+\begin{frame}
+	\huge{
+	\begin{center}
+		\bf{Propagation of violence}\linebreak
+	\end{center}
+		}
+
+	\begin{center}		
+		\animategraphics[autoplay, scale=0.17]{1}{Figures/Propagation}{0}{5}
+	\end{center}
+
+	\tiny{Espinal-Enriquez \& Larralde 2015}
+\end{frame}
+
+
+\begin{frame}
+	\begin{center}
+		\large{Homicide contribution to changes in male life expectancy}
+	\end{center}
+
+	\begin{center}
+		\includegraphics[scale=.66]{Figures/State_homicides_1}
+	\end{center}
+	
+	\tiny{Aburto, Beltr\'an-S\'anchez, Garc\'ia-Guerrero \& Canudas-Romo 2016. Health Affairs}				
+\end{frame}
+
+
+\begin{frame}
+	\begin{center}
+\large{Homicide contribution to changes in male life expectancy}
+	\end{center}
+
+
+	\begin{center}
+		\includegraphics[scale=.66]{Figures/State_homicides_2}
+	\end{center}
+	
+	\tiny{Aburto, Beltr\'an-S\'anchez, Garc\'ia-Guerrero \& Canudas-Romo 2016. Health Affairs}				
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+\large{Homicide contribution to changes in male life expectancy}
+	\end{center}
+
+
+	\begin{center}
+		\includegraphics[scale=.66]{Figures/State_homicides_3}
+	\end{center}
+	
+	\tiny{Aburto, Beltr\'an-S\'anchez, Garc\'ia-Guerrero \& Canudas-Romo 2016. Health Affairs}				
+\end{frame}
+
+
+\begin{frame}
+	\LARGE{
+
+		\begin{center}		
+			\textbf{Gains in life expectancy} due to medically amenable causes
+		\end{center}
+		
+		\begin{enumerate}
+			\item Infectious
+			\item Respiratory diseases 
+			\item Birth conditions
+			\item ...
+		\end{enumerate}
+
+	\pause
+
+	\begin{center}
+		\textbf{Wiped out by the increase of homicides after 2005 in each of the 32 states in Mexico}
+	\end{center}				
+
+}
+\end{frame}
+
+
+\begin{frame}
+	\Huge{
+	\begin{center}
+		\bf{Is this only happening in Mexico?}
+	\end{center}
+	}
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+		\large{Brazil: Homicide contribution to changes in male life expect.}
+	\end{center}
+
+
+	\begin{center}
+		\includegraphics[scale=.39]{Figures/Brazil_Results}
+	\end{center}
+	
+	\tiny{Aburto, Calazans, Queiroz, Luhar \& Canudas-Romo. Submitted to Health Affairs}	
+\end{frame}
+
+
+\begin{frame}
+	\begin{center}
+		\Large{Venezuela: Change in male life expectancy at birth by cause of death 1996-2013, from 68.6 to 70.6}
+	\end{center}
+
+	\begin{center}
+		\includegraphics[scale=.40]{Figures/VenezuelaDecomp_1}
+	\end{center}
+
+	\tiny{Garc\'ia \& Aburto 2019. International Journal of Epidemiology}	
+	
+\end{frame}
+
+\begin{frame}
+	\Huge{
+	\begin{center}
+		\bf{Is it a Latin American effect?}
+	\end{center}
+	}
+\end{frame}
+
+
+\begin{frame}
+\Huge{
+\begin{center}
+International Perspective \linebreak \\
+
+{\fontsize{70}{80}\selectfont 
+
+ $\backsim$ 2,000,000}\\ \pause
+ 
+\bigskip
+15-29\\
+
+\bigskip \pause
+2005-2015
+
+\end{center}
+}
+\end{frame}
+
+\begin{frame}
+\Huge{
+\begin{center}
+{\fontsize{70}{80}\selectfont 77\% \\
+}
+\bigskip
+
+{\fontsize{50}{60}\selectfont
+
+Men
+}
+
+\end{center}
+}
+\end{frame}
+
+
+\begin{frame}
+\Huge{
+\begin{center}
+{\fontsize{70}{80}\selectfont 35\% Homicides}\\
+(+ 1/2 million)
+
+\end{center}
+}
+\end{frame}
+
+
+\begin{frame}
+\Huge{
+\begin{center}
+{\fontsize{70}{80}\selectfont Barcelona}\\
+(574,377) \\
+
+Ages 10-39
+
+\end{center}
+}
+\end{frame}
+
+
+\begin{frame}
+	\begin{center}
+		\large{Homicide contribution to the gap in life expectancy between Latin America and High-income countries by life expectancy}
+	\hspace*{-.8cm}    
+	\includegraphics[scale=.36]{Figures/BMJ_Fig}	
+	
+		\end{center}
+
+	\tiny{Canudas-Romo \& Aburto 2019, BMJ Global Health}
+\end{frame}
+
+
+
+
+
+
+
+
+\begin{frame}
+	\LARGE{
+		\begin{center}
+			\textbf{Consequences of violence go beyond homicides}
+		\end{center}
+	
+	\pause
+	
+	Victims of violence
+	\begin{itemize}
+		
+		\item Depression
+
+		\item Alcohol abuse
+		
+		\item Suicidal behavior
+		
+		\item Psychological problems
+						
+	\end{itemize}	
+	
+		}
+		\tiny{Davidson et al. 1996,Braveman et al 2014,Mikton et al. 2014}
+\end{frame}
+
+
+\begin{frame}
+	\LARGE{
+		\begin{center}
+			\textbf{Consequences of violence go beyond homicides}
+		\end{center}
+	
+	Witnessing violence
+	
+		\begin{itemize}
+		
+		\item Higher rates of post-traumatic stress disorder
+
+		\item Depression 
+		
+		\item Externalize violence
+		
+		\item \textbf{Perceived vulnerability (fear)} 
+						
+	\end{itemize}
+	
+		}
+		\tiny{Buka et al. 2001}
+\end{frame}
+
+
+\begin{frame}
+	\LARGE{
+		\begin{center}	
+		\textbf{Can we estimate the average number of years spent vulnerable of becoming victims of violence?}
+		\end{center} 
+		
+		\pause
+		
+		\begin{enumerate}
+		
+		\item Surveys of perception of public safety.
+
+		\item Mortality data.
+		
+		\item Sullivan method.
+		
+						
+		\end{enumerate}
+	
+		}
+		\tiny{Canudas-Romo, Aburto, Garc\'ia-Guerrero \& Beltr\'an-S\'anchez 2017, Journal of Epidemiology and Community Health}
+\end{frame}
+
+\begin{frame}
+	
+	\begin{center}
+		\includegraphics[scale=.32]{Figures/JECH}
+	\end{center}
+
+\end{frame}
+
+\begin{frame}
+	\Large{
+	\begin{center}
+			\textbf{Mexican life expectancy with and without vulnerability, 2005 and 2014.}
+	\end{center}
+	
+	\begin{center}
+		\includegraphics[scale=1.2]{Figures/Vulnerability}
+		
+		\pause
+		
+		\textbf{Increase of 30.5 million person-years.}
+	\end{center}
+		}
+		
+	\tiny{Canudas-Romo, Aburto, Garc\'ia-Guerrero \& Beltr\'an-S\'anchez 2017, Journal of Epidemiology and Community Health}
+\end{frame}
+
+
+\begin{frame}
+	\huge{
+		\begin{center}
+		
+		\textbf{What is the effect of homicides on the uncertainty of life?}
+		
+		\end{center}		
+
+	}
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+		\Large{\textbf{What is lifetime uncertainty or lifespan inequality?}}
+	\end{center}
+
+
+	\begin{center}
+		\includegraphics[scale=.49]{Figures/DistribAUS_1}
+	\end{center}
+	
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+		\Large{\textbf{What is lifetime uncertainty or lifespan inequality?}}
+	\end{center}
+
+
+	\begin{center}
+		\includegraphics[scale=.49]{Figures/DistribAUS_2}
+	\end{center}
+			
+\end{frame}
+
+\begin{frame}
+\LARGE{
+\textbf{Why lifetime uncertainty?}
+		\begin{itemize}
+		
+		\item Greater \textbf{uncertainty} in the timing of death. \pause
+
+		\item Implications on \textbf{planning} of life's events. \pause
+		
+		\item \textbf{Increasing} vulnerability at the societal level. \pause
+		
+		\item \textbf{Ineffectiveness} of policies aiming to protect individuals.
+						
+		\end{itemize}
+
+}
+\end{frame}
+
+
+\begin{frame}
+\begin{center}
+\LARGE{\textbf{Mexican context}}
+\end{center}
+
+\Large{
+	\textbf{$e^{\dagger}_{15}\longrightarrow  $} average remaining life expectancy when death occurs.
+
+	\begin{itemize}
+		\item Easy \textbf{public health interpretation}.
+		\pause
+		\item \textbf{Quantify} age and cause specific effects.
+		\pause
+		\item Separate ages that \textbf{decrease} from those that \textbf{increase}.
+		\pause
+		\item Conditioned to age 15 to capture the \textbf{onset of violence}.
+	\end{itemize}
+
+}
+\end{frame}
+
+
+
+\begin{frame}
+	\begin{center}
+		\Large{\textbf{National lifespan inequality}}
+	\end{center}
+
+	\hspace*{-1cm}   
+	\includegraphics[scale=.31]{Figures/Figure_2_2}
+	
+	\tiny{Aburto \& Beltr\'an-S\'anchez 2019. American Journal of Public Health}
+\end{frame}
+
+
+\begin{frame}
+	\begin{center}
+		\Large{\textbf{National lifespan inequality}}
+	\end{center}
+
+	\hspace*{-1cm}   
+	\includegraphics[scale=.31]{Figures/Figure_2}
+	
+	\tiny{Aburto \& Beltr\'an-S\'anchez 2019. American Journal of Public Health}
+
+\end{frame}
+
+
+\begin{frame}
+	\begin{center}
+		\Large{{Changes in male lifespan inequality by state}}
+
+		\includegraphics[scale=.45]{Figures/Figure_3_1}
+		\end{center}
+		
+		\vspace*{-.5cm}
+		\tiny{Aburto \& Beltr\'an-S\'anchez 2019. American Journal of Public Health}
+
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+		\Large{{Changes in male lifespan inequality by state}}
+
+		\includegraphics[scale=.45]{Figures/Figure_3}
+		\end{center}
+		
+		\vspace*{-.5cm}
+\tiny{Aburto \& Beltr\'an-S\'anchez 2019. American Journal of Public Health}
+\end{frame}
+
+
+\begin{frame}
+	\begin{center}
+		\Large{\textbf{Homicide contribution}}
+		\includegraphics[scale=.51]{Figures/Figure_4_1}
+	\end{center}
+
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+		\Large{\textbf{Homicide contribution}}
+		\includegraphics[scale=.51]{Figures/Figure_4}
+	\end{center}
+
+\end{frame}
+
+
+
+\begin{frame}
+
+\Large{
+2 of most dangerous cities in the world in 2016 in this state (The Economist)!
+
+				\begin{center}
+		\includegraphics[scale=.38]{Figures/Capture}
+				\end{center}				
+
+}
+\end{frame}
+
+\begin{frame}
+\LARGE{
+\begin{center}
+\textbf{Do we gain something by looking at lifetime uncertainty?}
+\end{center}
+}
+\end{frame}
+
+
+\begin{frame}
+	\begin{center}
+		\Large{Venezuela}
+	\end{center}
+
+	\hspace*{-1cm}   
+	\includegraphics[scale=.31]{Figures/VenezuelaDecomp_1}	
+
+\tiny{Garc\'ia \& Aburto 2019. International Journal of Epidemiology}
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+		\Large{Venezuela}
+	\end{center}
+
+	\hspace*{-1cm}   
+	\includegraphics[scale=.31]{Figures/VenezuelaDecomp_1_2}	
+	
+\tiny{Garc\'ia \& Aburto 2019. International Journal of Epidemiology}
+\end{frame}
+
+
+\begin{frame}
+	\begin{center}
+		\Large{Venezuela}
+	\end{center}
+
+	\hspace*{-1cm}   
+	\includegraphics[scale=.31]{Figures/VenezuelaDecomp_2}	
+	
+\tiny{Garc\'ia \& Aburto 2019. International Journal of Epidemiology}
+
+\end{frame}
+
+
+\begin{frame}
+	\begin{center}
+		\Large{Eastern and Central Europe}
+	\end{center}
+
+	\includegraphics[scale=.4]{Figures/Eastern}	
+	
+\tiny{Aburto \& van Raalte 2018. Demography}
+
+\end{frame}
+
+
+
+\begin{frame}
+\Huge{
+\begin{center}
+\textbf{Where do we go from here?} \pause
+
+\bigskip
+
+\textbf{GLOBAL}
+\end{center}
+}
+\end{frame}
+
+\begin{frame}
+	\LARGE{ 
+		
+		\begin{enumerate}
+		
+		\item Global Peace Index (GPI) $\longrightarrow$ level of violence in a country \pause
+
+		\item Global Burden of Disease $\longrightarrow$ mortality data \pause
+		
+		\item Best team: Big data, visualization, sociology, epidemiology, lifespan inequality, sex differences, different regions of the world experts
+						
+		\end{enumerate}
+		
+		}
+\end{frame}
+
+
+
+\begin{frame}
+
+\hspace*{-1cm}   
+	\includegraphics[scale=.455]{Figures/1Map_Males_version1}	
+
+\bigskip
+	
+\tiny{Aburto, di Lego, Torrisi, Kashyap, van Raalte \& Riffe (Working progress)}
+
+\end{frame}
+
+
+\begin{frame}
+
+\begin{center} 
+\hspace*{-1cm}   
+	\includegraphics[scale=.4]{Figures/1scatter_plot_1}	
+\end{center}
+
+\bigskip
+	
+\tiny{Aburto, di Lego, Torrisi, Kashyap, van Raalte \& Riffe (Working progress)}
+
+\end{frame}
+
+
+\begin{frame}
+
+Violent vs peaceful nations
+\hspace*{-.5cm}   
+	\includegraphics[scale=.16]{Figures/1Decomp_example_fig}	
+
+\bigskip
+	
+\tiny{Aburto, di Lego, Torrisi, Kashyap, van Raalte \& Riffe (Working progress)}
+
+\end{frame}
+
+
+\begin{frame}
+\Large{
+Key messages \pause
+		\begin{itemize}
+		\item Violence is increasing vulnerability.\pause
+		
+	    \item Urgent need of policies to address violence. \pause
+		
+		\item Homicides \textbf{reversed} life expectancy gains and \textbf{increased} inequality of lifespans. \pause
+		
+		\item Young males \textbf{live less}, on average, and \textbf{face more uncertainty}.\pause
+		
+		\item Females perceive larger \textbf{vulnerability}.\pause
+		
+	    \item Failure to recognize and correct the detrimental \textbf{consequences in health and human rights} of 					violence.
+							
+		\end{itemize}
+
+}
+\end{frame}
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+ \begin{center}
+
+
+
+%Shinnyapp: \url{<https://demographs.shinyapps.io/LVMx_15_App/>}
+
+
+\includegraphics[scale=0.3]{Figures/1Map_Males_version1} \\   
+
+	\bigskip
+
+Email: jmaburto@sdu.dk 
+
+\faTwitter \quad  @jm\_aburto 
+
+\faGithub \quad @jmaburto 
+ 
+
+\end{center}
+ 
+ 
+
+\end{frame}
+
+
+
+\end{document}
+	
+

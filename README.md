@@ -16,6 +16,3 @@ To get started. Go to the R folder.
 5) `Uncertainty.R` calculates several lifetable quantities, presently only for GBD data. This uses `DemoDecomp`, as well as some other packages that may need to be installed from github. This populates `Data/Results`, used variously elsewhere.
 
 6) `Comparison.R` decomposes differences in a selection of lifetable quantities between GPI high-violence countries and a synthetic low-violence standard. This uses `DemoDecomp`, as well as some other packages that may need to be installed from github. `Relationships.R` can also be run at this stage, independently.
-
-
-
