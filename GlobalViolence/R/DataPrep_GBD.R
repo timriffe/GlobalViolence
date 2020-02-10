@@ -11,23 +11,23 @@ dir.create(here("GlobalViolence","Data","Grouped","GBD"), showWarnings = FALSE, 
 GBD     <- readRDS(file.path(gbd.folder,"GBD.rds"))
 
 # remove Percent, not needed now.
-GBD <- GBD[metric_name != "Percent"]; gc()
+GBD <- GBD[metric!= "Percent"]; gc()  #mine did not show this underline symbol (?)
 
 # recode age
 rmages <- c("Under 5","Early Neonatal","Late Neonatal","Post Neonatal",
 		"15-49 years","80 plus","All Ages","5-14 years","15-49 years",
 		"50-69 years","70+ years","<20 years","10 to 24","10 to 54","Age-standardized","<70 years")
 
-GBD <- GBD[!age_name%in%rmages];gc()
+GBD <- GBD[!age%in%rmages];gc()    #also here the name was different for me
 recvec <- c("<1 year" = 0, "1 to 4" = 1, "5 to 9" = 5, "10 to 14" = 10, 
 		"15 to 19" = 15, "20 to 24" = 20, "25 to 29" = 25, "30 to 34" = 30, 
 		"35 to 39" = 35, "40 to 44" = 40, "45 to 49" = 45, "50 to 54" = 50, 
 		"55 to 59" = 55, "60 to 64" = 60, "65 to 69" = 65, "70 to 74" = 70, 
 		"75 to 79" = 75, "80 to 84" = 80, "85 to 89" = 85, "90 to 94" = 90, 
 		"95 plus" = 95)
-GBD$age <- recvec[GBD$age_name]
+GBD$age <- recvec[GBD$age]
 
-GBD[,c("age_name","age_id"):=NULL];gc()
+#GBD[,c("age_name","age_id"):=NULL];gc()
 
 # More reshaping to match GHE: 3 files with MID, LOW, UPP.
 # Can use Rate and Number to recuperate exposure.
@@ -35,10 +35,10 @@ GBD[,c("age_name","age_id"):=NULL];gc()
 # group state violence and terrorism
 recvec <- c("All causes" = "a", "Conflict and terrorism" = "w", "Interpersonal violence" = "h", 
 		"Executions and police conflict" = "w")
-GBD$cause <- recvec[GBD$cause_name]
+GBD$cause <- recvec[GBD$cause]   # again no underline
 
 # keep: location, metric, year, Sex, cause, Age
-setnames(GBD,old = c("sex_id","location_name","metric_name"),c("sex","location","metric"))
+#setnames(GBD,old = c("sex_id","location_name","metric_name"),c("sex","location","metric"))
 
 
 # reset names for metric:
@@ -56,6 +56,8 @@ names(recvec) <- ISO[, 1]
 GBD$ISO3      <- recvec[GBD$location]
 
 MID <- dcast(GBD, ISO3 + location + year + sex + age ~ metric + cause, value.var = "val")
+
+#something´s odd here ? this line of code does not work for any of the variants
 MID <- MID[,.(M_a = M_a/1e5, M_h = M_h/1e5, M_w = M_w/1e5, D_a = D_a, D_h = D_h, D_w = D_w),by=.(ISO3,location,year,sex,age)]
 setnames(MID, colnames(MID), new = gsub(pattern = "_", replace = "", colnames(MID)))
 saveRDS(MID, file = file.path("GlobalViolence","Data","Grouped","GBD","GBDmid.rds")) ; rm(MID) ; gc()
@@ -66,7 +68,7 @@ setnames(UPP, colnames(UPP), new = gsub(pattern = "_", replace = "", colnames(UP
 saveRDS(UPP, file = file.path("GlobalViolence","Data","Grouped","GBD","GBDupp.rds")) ; rm(UPP) ; gc()
 
 LOW <- dcast(GBD, ISO3 + location + year + sex + age ~ metric + cause, value.var = "lower")
-LOW <- LOW[,.(M_a = M_a/1e5, M_h = M_h/1e5, M_w = M_w/1e5, D_a = D_a, D_h = D_h, D_w = D_w),by=.(ISO3,location,year,sex,age)]
+LOW <- LOW[,.(M_a = M_a/1e5, M_h = M_h/1e5, M_w = M_w/1e5, D_a = D_a, D_h = D_h, D_w = D_w),by=.(ISO3,location,year,sex,age)] 
 setnames(LOW, colnames(LOW), new = gsub(pattern = "_", replace = "", colnames(LOW)))
 saveRDS(LOW, file = file.path("GlobalViolence","Data","Grouped","GBD","GBDlow.rds")) ; rm(LOW) ; gc()
 

@@ -4,8 +4,8 @@
 
 source(here("GlobalViolence","R","Functions.R"))
 # install if necessary
-#library(devtools)
-#install_github("timriffe/DistributionTTD/DistributionTTD/R/DistributionTTD")
+library(devtools)
+install_github("timriffe/DistributionTTD/DistributionTTD/R/DistributionTTD")
 #install_github("timriffe/DemoTools")
 library(here)
 library(DistributionTTD)
@@ -22,20 +22,24 @@ variants <- c("low","mid","upp")
 for (i in 1:length(variants)){
 	
 	# choose an explicit closeout file
+  # don´t know why but for me "sex" was saved without capital "s"
+  # also now you add and "a" before all causes of death..
+  
 	GBDi <- readRDS(here("GlobalViolence","Data","Closeout","GBD",
-									paste0("GBD",variants[i],"_ggompertz_65_90_65.Rdata")))
-	GBDi[,sdx:=mx2sd(M),.(location,year,Sex)]
-	GBDi[,sdx_no_h:=mx2sd(M-Mh),.(location,year,Sex)]
-	GBDi[,sdx_no_hw:=mx2sd(M-Mh-Mw),.(location,year,Sex)]
-	GBDi[,edx:=mx2edagger(M),.(location,year,Sex)]
-	GBDi[,edx_no_h:=mx2edagger(M-Mh),.(location,year,Sex)]
-	GBDi[,edx_no_hw:=mx2edagger(M-Mh-Mw),.(location,year,Sex)]
-	GBDi[,ex:=mx2ex(M),.(location,year,Sex)]
-	GBDi[,ex_no_h:=mx2ex(M-Mh),.(location,year,Sex)]
-	GBDi[,ex_no_hw:=mx2ex(M-Mh-Mw),.(location,year,Sex)]
+									paste0("GBD",variants[i],"_ggompertz_65_90_65.rds")))
+	GBDi[,sdx:=mx2sd(Ma),.(location,year,sex)]
+	GBDi[,sdx_no_h:=mx2sd(Ma-Mh),.(location,year,sex)]
+	GBDi[,sdx_no_hw:=mx2sd(Ma-Mh-Mw),.(location,year,sex)]
+	GBDi[,edx:=mx2edagger(Ma),.(location,year,sex)]
+	GBDi[,edx_no_h:=mx2edagger(Ma-Mh),.(location,year,sex)]
+	GBDi[,edx_no_hw:=mx2edagger(Ma-Mh-Mw),.(location,year,sex)]
+	GBDi[,ex:=mx2ex(Ma),.(location,year,sex)]
+	GBDi[,ex_no_h:=mx2ex(Ma-Mh),.(location,year,sex)]
+	GBDi[,ex_no_hw:=mx2ex(Ma-Mh-Mw),.(location,year,sex)]
 	saveRDS(GBDi, file = here("GlobalViolence","Data","Results","GBD",paste0("GBD",variants[i],".rds")))
 	rm(GBDi);gc()
 }
+
 for (i in 1:length(variants)){
   
   # choose an explicit closeout file

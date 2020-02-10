@@ -186,15 +186,19 @@ variants <- c("low","mid","upp")
 # you can change this:
 # mc.cores = (detectCores() - 1)
 # to use fewer cores. It'll work even if mc.cores is 1 or 2.
+# Actually this strategy did not work for me; I just kept your previous strategy
+# I used 8 here because I could at work. But don´t think it is duable usually
+
 
 for (i in 1:length(variants)){
   GBDi <- readRDS(file.path(gbd.folder, paste0("GBD",variants[i],".rds"))) 
     GBDi %>% split(list(GBDi$location,GBDi$sex,GBDi$year), drop = TRUE) %>% 
-	  mclapply(GBD.chunk, mc.cores = (detectCores() - 1)) %>% 
+	  mclapply(GBD.chunk, mc.cores = 8) %>% 
 	  rbindlist() %>% 
 	  saveRDS(file = here("GlobalViolence","Data","Single","GBD",paste0("GBD",variants[i],".rds")))
 	gc()
 }
+
 
 # these are not 'finalized' still, as the pclm closeout isn't demographically informed, 
 # and can go haywire. Next step DataPrep_Closeout.R
@@ -225,7 +229,8 @@ for (i in 1:3){
 	rm(GBDi);gc()
 }
 
-
+# for here I always receive this error: Error in dim(ordered) <- ns : 
+#dims [product 1] do not match the length of object [0]
 
 # end
 # ---------------------------
