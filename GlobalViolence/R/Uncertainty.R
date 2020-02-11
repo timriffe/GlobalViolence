@@ -5,7 +5,7 @@
 source(here("GlobalViolence","R","Functions.R"))
 # install if necessary
 library(devtools)
-install_github("timriffe/DistributionTTD/DistributionTTD/R/DistributionTTD")
+#install_github("timriffe/DistributionTTD/DistributionTTD/R/DistributionTTD")
 #install_github("timriffe/DemoTools")
 library(here)
 library(DistributionTTD)
@@ -66,14 +66,6 @@ for (i in 1:length(variants)){
       saveRDS( file = here("GlobalViolence","Data","Results","GBD",paste0("GBD",variants[i],".rds")))
     rm(GBDi);gc()
   }
-
-# oops we need to recuperate ISO codes
-# ISO Codes for mapping. This should be earlier in processing, move at some point.
-
-# I think we should either add them using the countrycode package I mentioned in the 
-# DataPrep or we should just add the ISO codes when mapping. I think we can just leave it 
-# for the Maps code, since it is not really important before that and this just seems a bit
-# messier, so I would just skip this next part altogether..what do you think?
 
 
 
