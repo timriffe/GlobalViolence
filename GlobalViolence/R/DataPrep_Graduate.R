@@ -16,14 +16,9 @@ library(reshape2)
 library(magrittr)
 
 # TR: any other cases?
-# VDL: I don´t think we should this. We actually need both packages to run 
-# library(parallel) this because we can use your mc.cores = (detectCores() - 1) command
-# library(parallelsugar) this because of Windowns operational system
 
-
-if(.Platform$OS.type == "unix"){
-  library(parallel)
-} 
+library(parallel)
+ 
 if(.Platform$OS.type == "windows"){
   library(parallelsugar)
 } 
@@ -192,9 +187,6 @@ variants <- c("low","mid","upp")
 # you can change this:
 # mc.cores = (detectCores() - 1)
 # to use fewer cores. It'll work even if mc.cores is 1 or 2.
-# Actually this strategy did not work for me; I just kept your previous strategy
-# kee
-
 
 
 for (i in 1:length(variants)){
@@ -205,7 +197,6 @@ for (i in 1:length(variants)){
 	  saveRDS(file = here("GlobalViolence","Data","Single","GBD",paste0("GBD",variants[i],".rds")))
 	gc()
 }
-
 
 
 # these are not 'finalized' still, as the pclm closeout isn't demographically informed, 
@@ -237,8 +228,6 @@ for (i in 1:3){
 	rm(GBDi);gc()
 }
 
-# for here I always receive this error: Error in dim(ordered) <- ns : 
-#dims [product 1] do not match the length of object [0]
 
 # end
 # ---------------------------
