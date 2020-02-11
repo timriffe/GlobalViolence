@@ -4,6 +4,8 @@
 
 library(here)
 library(data.table)
+library(countrycode)
+
 gbd.folder <- here("GlobalViolence","Data","Inputs","GBD")
 
 dir.create(here("GlobalViolence","Data","Grouped","GBD"), showWarnings = FALSE, recursive = TRUE)
@@ -48,26 +50,35 @@ GBD$metric <- recvec[GBD$metric]
 GBD <- GBD[, .(val = sum(val), upper = sum(upper) ,lower = sum(lower)),
 		by = .(metric, location, year, sex, cause, age)];gc()
 
-# ISO Codes for mapping. This should be earlier in processing, move at some point.
-ISO           <- read.csv(here("GlobalViolence","Data","Inputs","GBD","GBD_ISO3.csv"),
-                          stringsAsFactors = FALSE)
-recvec        <- ISO[, 2]
-names(recvec) <- ISO[, 1]
-GBD$ISO3      <- recvec[GBD$location]
+
+
+#For some reason this is not working, at least for me. Taiwan ISO code (TWN) disappears, generating missing later.
+# these are the first observations. The rest is fine though. 
+# Instead of doing all of this maybe we could just apply country code now. See suggestion below
+# Using countrycode here instead of code lines above:
+
+GBD$ISO3<-countrycode(GBD$location, origin="country.name", destination="iso3c")
 
 MID <- dcast(GBD, ISO3 + location + year + sex + age ~ metric + cause, value.var = "val")
 
-#something´s odd here ? this line of code does not work for any of the variants
-MID <- MID[,.(M_a = M_a/1e5, M_h = M_h/1e5, M_w = M_w/1e5, D_a = D_a, D_h = D_h, D_w = D_w),by=.(ISO3,location,year,sex,age)]
+
+#something´s odd here ? this line of code does not work for any of the variants (?)
+# it worked for me when again stating that it is a data.table object MID<-as.data.table(MID)
+MID<-as.data.table(MID)
+MID <- MID[,.(M_a = M_a/1e5, M_h = M_h/1e5, M_w = M_w/1e5, D_a = D_a, D_h = D_h, D_w = D_w), by=.(ISO3,location,year,sex,age)]
 setnames(MID, colnames(MID), new = gsub(pattern = "_", replace = "", colnames(MID)))
 saveRDS(MID, file = file.path("GlobalViolence","Data","Grouped","GBD","GBDmid.rds")) ; rm(MID) ; gc()
 
+
 UPP <- dcast(GBD, ISO3 + location + year + sex + age ~ metric + cause, value.var = "upper")
+UPP<-as.data.table(UPP)
 UPP <- UPP[,.(M_a = M_a/1e5, M_h = M_h/1e5, M_w = M_w/1e5, D_a = D_a, D_h = D_h, D_w = D_w),by=.(ISO3,location,year,sex,age)]
 setnames(UPP, colnames(UPP), new = gsub(pattern = "_", replace = "", colnames(UPP)))
 saveRDS(UPP, file = file.path("GlobalViolence","Data","Grouped","GBD","GBDupp.rds")) ; rm(UPP) ; gc()
 
+
 LOW <- dcast(GBD, ISO3 + location + year + sex + age ~ metric + cause, value.var = "lower")
+LOW<-as.data.table(LOW)
 LOW <- LOW[,.(M_a = M_a/1e5, M_h = M_h/1e5, M_w = M_w/1e5, D_a = D_a, D_h = D_h, D_w = D_w),by=.(ISO3,location,year,sex,age)] 
 setnames(LOW, colnames(LOW), new = gsub(pattern = "_", replace = "", colnames(LOW)))
 saveRDS(LOW, file = file.path("GlobalViolence","Data","Grouped","GBD","GBDlow.rds")) ; rm(LOW) ; gc()
