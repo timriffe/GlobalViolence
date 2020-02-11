@@ -14,7 +14,13 @@ library(DemoTools)
 library(MortalitySmooth)
 library(reshape2)
 library(magrittr)
+
 # TR: any other cases?
+# VDL: I don´t think we should this. We actually need both packages to run 
+# library(parallel) this because we can use your mc.cores = (detectCores() - 1) command
+# library(parallelsugar) this because of Windowns operational system
+
+
 if(.Platform$OS.type == "unix"){
   library(parallel)
 } 
@@ -187,17 +193,19 @@ variants <- c("low","mid","upp")
 # mc.cores = (detectCores() - 1)
 # to use fewer cores. It'll work even if mc.cores is 1 or 2.
 # Actually this strategy did not work for me; I just kept your previous strategy
-# I used 8 here because I could at work. But don´t think it is duable usually
+# kee
+
 
 
 for (i in 1:length(variants)){
   GBDi <- readRDS(file.path(gbd.folder, paste0("GBD",variants[i],".rds"))) 
     GBDi %>% split(list(GBDi$location,GBDi$sex,GBDi$year), drop = TRUE) %>% 
-	  mclapply(GBD.chunk, mc.cores = 8) %>% 
+	  mclapply(GBD.chunk,mc.cores = (detectCores() - 1)) %>% 
 	  rbindlist() %>% 
 	  saveRDS(file = here("GlobalViolence","Data","Single","GBD",paste0("GBD",variants[i],".rds")))
 	gc()
 }
+
 
 
 # these are not 'finalized' still, as the pclm closeout isn't demographically informed, 
