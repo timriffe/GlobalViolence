@@ -14,10 +14,11 @@ library(DemoTools)
 library(MortalitySmooth)
 library(reshape2)
 library(magrittr)
+
 # TR: any other cases?
-if(.Platform$OS.type == "unix"){
-  library(parallel)
-} 
+
+library(parallel)
+ 
 if(.Platform$OS.type == "windows"){
   library(parallelsugar)
 } 
@@ -187,14 +188,16 @@ variants <- c("low","mid","upp")
 # mc.cores = (detectCores() - 1)
 # to use fewer cores. It'll work even if mc.cores is 1 or 2.
 
+
 for (i in 1:length(variants)){
   GBDi <- readRDS(file.path(gbd.folder, paste0("GBD",variants[i],".rds"))) 
     GBDi %>% split(list(GBDi$location,GBDi$sex,GBDi$year), drop = TRUE) %>% 
-	  mclapply(GBD.chunk, mc.cores = (detectCores() - 1)) %>% 
+	  mclapply(GBD.chunk,mc.cores = (detectCores() - 1)) %>% 
 	  rbindlist() %>% 
 	  saveRDS(file = here("GlobalViolence","Data","Single","GBD",paste0("GBD",variants[i],".rds")))
 	gc()
 }
+
 
 # these are not 'finalized' still, as the pclm closeout isn't demographically informed, 
 # and can go haywire. Next step DataPrep_Closeout.R
@@ -224,7 +227,6 @@ for (i in 1:3){
 	
 	rm(GBDi);gc()
 }
-
 
 
 # end

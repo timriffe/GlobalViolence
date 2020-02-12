@@ -51,7 +51,7 @@ for (i in 1:3){
 	GBDi$ISO3     <- as.character(GBDi$ISO3)
 
 	GBDi %>% split(list(GBDi$location, GBDi$sex, GBDi$year), drop = TRUE) %>% 
-	  mclapply(GBD.closeout, mc.cores = (detectCores() - 1),
+	  lapply(GBD.closeout,
 	           fit_low = 65, fit_up = 90, extrap_low = 65,
 	           omega = 110, law = "ggompertz") %>% 
 	  rbindlist() %>% 
