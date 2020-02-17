@@ -20,7 +20,7 @@ dir.create(here("GlobalViolence","Data","Results","GBD"), showWarnings = FALSE, 
 # for now just GBD
 variants <- c("low","mid","upp")
 for (i in 1:length(variants)){
-	
+	cat(i,"\n")
 	# choose an explicit closeout file
   # don´t know why but for me "sex" was saved without capital "s"
   # also now you add and "a" before all causes of death (check sequence from DataPrep)..
@@ -39,34 +39,7 @@ for (i in 1:length(variants)){
 	saveRDS(GBDi, file = here("GlobalViolence","Data","Results","GBD",paste0("GBD",variants[i],".rds")))
 	rm(GBDi);gc()
 }
-
-  
-  # choose an explicit closeout file
-  
-  # something happens here age disappears in the final file - I did not get this;
-  # Is it the same but now you offer a pipeline+data.table approach?
-  # I just kept the same data.table sintax from before and it seemed better.
-  # please check what you think. Maybe this second step is an additional thing
-  # and I am missing something...
-  
-  for (i in 1:length(variants)){
-    
-    # choose an explicit closeout file
-    GBDi <- readRDS(here("GlobalViolence","Data","Closeout","GBD",
-                         paste0("GBD",variants[i],"_ggompertz_65_90_65.rds"))) 
-    GBDi[,.(sdx=mx2sd(Ma),
-            sdx_no_h=mx2sd(Ma-Mh),
-            sdx_no_hw=mx2sd(Ma-Mh-Mw),
-            edx=mx2edagger(Ma),
-            edx_no_h=mx2edagger(Ma-Mh),
-            edx_no_hw=mx2edagger(Ma-Mh-Mw),
-            ex=mx2ex(Ma),
-            ex_no_h=mx2ex(Ma-Mh),
-            ex_no_hw=mx2ex(Ma-Mh-Mw)),.(location,year,sex)] %>% 
-      saveRDS( file = here("GlobalViolence","Data","Results","GBD",paste0("GBD",variants[i],".rds")))
-    rm(GBDi);gc()
-  }
-
+A <- readRDS(file = here("GlobalViolence","Data","Results","GBD",paste0("GBD",variants[i],".rds")))
 
 
 # Next file, for example Comparison.R or Relationships.R

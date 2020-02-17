@@ -1,7 +1,3 @@
-# TODO: rerun this after replace mx in old ages with a MortalityLaws extrapolation.
-# ggompertz, Beard, MakehamKannisto all options. The cause-specific partition in old 
-# ages is inconsequential, so no need to extrapolate it in some clever way.
-
 # Author: tim
 ###############################################################################
 
@@ -21,7 +17,8 @@ dir.create(here("GlobalViolence","Figures","GBD","Decomp"), showWarnings = FALSE
 vnt  <- "mid"
 yr   <- 2017
 
-
+# TR 17-2-2020: I didn't have this file :-/ 
+# Code from here down not rerun
 GPI      <- read.csv(here("GlobalViolence","Data","Inputs","GPI","GPI_ISO3.csv"),stringsAsFactors=FALSE)
 setnames(GPI,"ISO3c","ISO3")
 GPI      <- data.table(GPI)

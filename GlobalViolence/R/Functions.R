@@ -4,8 +4,8 @@
 
 mx2dx <- function(mx){
 	ax <- c(.1,rep(.5,110))
-	qx <- mxax2qx(nMx=mx, nax=ax, AgeInt=rep(1,111), closeout = TRUE,IMR=NA)
-	lx2dx(qx2lx(qx,radix=1))
+	qx <- lt_id_ma_q(nMx=mx, nax=ax, AgeInt=rep(1,111), closeout = TRUE,IMR=NA)
+	lt_id_l_d(lt_id_q_l(qx,radix=1))
 }
 
 mx2sd <- function(mx){
@@ -17,11 +17,11 @@ mx2sd <- function(mx){
 
 mx2edagger <- function(mx){
 	ax <- c(.1,rep(.5,110))
-	qx <- mxax2qx(nMx=mx, nax=ax, AgeInt=rep(1,111), closeout = TRUE,IMR=NA)
-	lx <- qx2lx(qx,radix=1)
-	dx <- lx2dx(lx)
-	Lx <- lxdxax2Lx(lx = lx, ndx = dx, nax = ax, AgeInt=rep(1,111))
-	Tx <- Lx2Tx(Lx)
+	qx <- lt_id_ma_q(nMx=mx, nax=ax, AgeInt=rep(1,111), closeout = TRUE,IMR=NA)
+	lx <- lt_id_q_l(qx,radix=1)
+	dx <- lt_id_l_d(lx)
+	Lx <- lt_id_lda_L(lx = lx, ndx = dx, nax = ax, AgeInt=rep(1,111))
+	Tx <- lt_id_L_T(Lx)
 	ex <- Tx / lx
 	DX <- matrix(dx,nrow=111,ncol=111)
 	DX[upper.tri(DX)] <- 0
@@ -29,11 +29,11 @@ mx2edagger <- function(mx){
 }
 mx2ex <- function(mx){
 	ax <- c(.1,rep(.5,110))
-	qx <- mxax2qx(nMx=mx, nax=ax, AgeInt=rep(1,111), closeout = TRUE,IMR=NA)
-	lx <- qx2lx(qx)
-	dx <- lx2dx(lx)
-	Lx <- lxdxax2Lx(lx = lx, ndx = dx, nax = ax, AgeInt=rep(1,111))
-	Tx <- Lx2Tx(Lx)
+	qx <- lt_id_ma_q(nMx=mx, nax=ax, AgeInt=rep(1,111), closeout = TRUE,IMR=NA)
+	lx <- lt_id_q_l(qx)
+	dx <- lt_id_l_d(lx)
+	Lx <- lt_id_lda_L(lx = lx, ndx = dx, nax = ax, AgeInt=rep(1,111))
+	Tx <- lt_id_L_T(Lx)
 	Tx / lx
 }
 
@@ -48,7 +48,7 @@ mx2ex_i <- function(mx,mxc){
 	# this is approach c from the book
 	# reference table functions
 	ax  <- c(.1,rep(.5,110))
-	qx  <- mxax2qx(nMx=mx, nax=ax, AgeInt=rep(1,111), closeout = TRUE,IMR=NA)
+	qx  <- lt_id_ma_q(nMx=mx, nax=ax, AgeInt=rep(1,111), closeout = TRUE,IMR=NA)
 	px  <- 1-qx
 	
 	# power perturb
@@ -57,9 +57,9 @@ mx2ex_i <- function(mx,mxc){
 	
 	# calculate per standard formulas
 	lxi <- cumprod(c(1,pxi))[1:111]
-	dxi <- lx2dx(lxi)
-	Lxi <- lxdxax2Lx(lx = lxi, ndx = dxi, nax = ax, AgeInt=rep(1,111))
-	Txi <- Lx2Tx(Lxi)
+	dxi <- lt_id_l_d(lxi)
+	Lxi <- lt_id_lda_L(lx = lxi, ndx = dxi, nax = ax, AgeInt=rep(1,111))
+	Txi <- lt_id_L_T(Lxi)
 	Txi / lxi
 }
 
@@ -121,7 +121,7 @@ edaggTemp <- function(mxcvec,.N=3,a=10,n=60){
 	qx          <- mx / (1 + (1 - ax) * mx) 
 	lx          <- cumprod(c(1, 1 - qx[-n]))
 	Lx          <- (lx[-n] + lx[-1])/2
-	Tx          <- Lx2Tx(Lx)
+	Tx          <- lt_id_L_T(Lx)
 	ex          <- Tx / lx[-n]
 	dxx         <- -diff(lx)
 	wmean(ex,dxx)

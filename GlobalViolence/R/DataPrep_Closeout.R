@@ -24,7 +24,7 @@ GBD.closeout <- function(.SD,
 		law = "kannisto_makeham"){
 	.SD <- arrange(.SD, age)
 	# this comes from DemoTools, calling MortalityLaws...
-	.SD$Ma <-	extra_mortality(.SD$Ma, 
+	.SD$Ma <-	lt_rule_m_extrapolate(.SD$Ma, 
 			.SD$age, 
 			x_fit = fit_low:fit_up, 
 			x_extr = extrap_low:omega,
