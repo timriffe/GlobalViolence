@@ -4,7 +4,7 @@
 
 source(here("GlobalViolence","R","Functions.R"))
 # install if necessary
-#library(devtools)
+library(devtools)
 #install_github("timriffe/DistributionTTD/DistributionTTD/R/DistributionTTD")
 #install_github("timriffe/DemoTools")
 library(here)
@@ -20,53 +20,26 @@ dir.create(here("GlobalViolence","Data","Results","GBD"), showWarnings = FALSE, 
 # for now just GBD
 variants <- c("low","mid","upp")
 for (i in 1:length(variants)){
-	
+	cat(i,"\n")
 	# choose an explicit closeout file
+  # don´t know why but for me "sex" was saved without capital "s"
+  # also now you add and "a" before all causes of death (check sequence from DataPrep)..
+  
 	GBDi <- readRDS(here("GlobalViolence","Data","Closeout","GBD",
-									paste0("GBD",variants[i],"_ggompertz_65_90_65.Rdata")))
-	GBDi[,sdx:=mx2sd(M),.(location,year,Sex)]
-	GBDi[,sdx_no_h:=mx2sd(M-Mh),.(location,year,Sex)]
-	GBDi[,sdx_no_hw:=mx2sd(M-Mh-Mw),.(location,year,Sex)]
-	GBDi[,edx:=mx2edagger(M),.(location,year,Sex)]
-	GBDi[,edx_no_h:=mx2edagger(M-Mh),.(location,year,Sex)]
-	GBDi[,edx_no_hw:=mx2edagger(M-Mh-Mw),.(location,year,Sex)]
-	GBDi[,ex:=mx2ex(M),.(location,year,Sex)]
-	GBDi[,ex_no_h:=mx2ex(M-Mh),.(location,year,Sex)]
-	GBDi[,ex_no_hw:=mx2ex(M-Mh-Mw),.(location,year,Sex)]
+									paste0("GBD",variants[i],"_ggompertz_65_90_65.rds")))
+	GBDi[,sdx:=mx2sd(Ma),.(location,year,sex)]
+	GBDi[,sdx_no_h:=mx2sd(Ma-Mh),.(location,year,sex)]
+	GBDi[,sdx_no_hw:=mx2sd(Ma-Mh-Mw),.(location,year,sex)]
+	GBDi[,edx:=mx2edagger(Ma),.(location,year,sex)]
+	GBDi[,edx_no_h:=mx2edagger(Ma-Mh),.(location,year,sex)]
+	GBDi[,edx_no_hw:=mx2edagger(Ma-Mh-Mw),.(location,year,sex)]
+	GBDi[,ex:=mx2ex(Ma),.(location,year,sex)]
+	GBDi[,ex_no_h:=mx2ex(Ma-Mh),.(location,year,sex)]
+	GBDi[,ex_no_hw:=mx2ex(Ma-Mh-Mw),.(location,year,sex)]
 	saveRDS(GBDi, file = here("GlobalViolence","Data","Results","GBD",paste0("GBD",variants[i],".rds")))
 	rm(GBDi);gc()
 }
-for (i in 1:length(variants)){
-  
-  # choose an explicit closeout file
-  GBDi <- readRDS(here("GlobalViolence","Data","Closeout","GBD",
-                       paste0("GBD",variants[i],"_ggompertz_65_90_65.rds"))) 
-  GBDi[,.(sdx=mx2sd(Ma),
-          sdx_no_h=mx2sd(Ma-Mh),
-          sdx_no_hw=mx2sd(Ma-Mh-Mw),
-          edx=mx2edagger(Ma),
-          edx_no_h=mx2edagger(Ma-Mh),
-          edx_no_hw=mx2edagger(Ma-Mh-Mw),
-          ex=mx2ex(Ma),
-          ex_no_h=mx2ex(Ma-Mh),
-          ex_no_hw=mx2ex(Ma-Mh-Mw)),.(location,year,sex)] %>% 
-  saveRDS( file = here("GlobalViolence","Data","Results","GBD",paste0("GBD",variants[i],".rds")))
-  rm(GBDi);gc()
-}
-# oops we need to recuperate ISO codes
-# ISO Codes for mapping. This should be earlier in processing, move at some point.
-ISO           <- read.csv(file.path("Data","Inputs","GBD","GBD_ISO3.csv"),
-		stringsAsFactors = FALSE)
-recvec        <- ISO[, 2]
-names(recvec) <- ISO[, 1]
-
-for (i in 1:length(variants)){
-	GBDi      <- local(get(load(file.path("Data","Results","GBD",paste0("GBD",variants[i],".Rdata")))))
-	GBDi$ISO3 <- recvec[GBDi$location]
-	save(GBDi, file = file.path("Data","Results","GBD",paste0("GBD",variants[i],".Rdata")))
-	rm(GBDi);gc()
-}
-
+A <- readRDS(file = here("GlobalViolence","Data","Results","GBD",paste0("GBD",variants[i],".rds")))
 
 
 # Next file, for example Comparison.R or Relationships.R

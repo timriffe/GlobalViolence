@@ -1,20 +1,7 @@
-# TODO: rerun this after replace mx in old ages with a MortalityLaws extrapolation.
-# ggompertz, Beard, MakehamKannisto all options. The cause-specific partition in old 
-# ages is inconsequential, so no need to extrapolate it in some clever way.
-# TR 28-2-2019: see new script DataPrep_Closeout.R under construction
-
 # Author: tim
 ###############################################################################
 
-me <- system("whoami",intern=TRUE)
-
-# augment this as needed
-if (me == "tim"){
-	setwd("/home/tim/git/GlobalViolence/GlobalViolence")
-}
-if (me == "sam\\jmaburto"){
-  setwd("C:/Users/jmaburto/Documents/GitHub/GlobalViolence/GlobalViolence/")
-}
+library(here)
 library(data.table)
 # install if necessary
 #library(devtools)
@@ -23,15 +10,16 @@ library(data.table)
 library(DemoTools)
 library(DistributionTTD)
 library(DemoDecomp)
-source("R/Functions.R")
+source(here("GlobalViolence","R","Functions.R"))
 
-dir.create(file.path("Figures","GBD","Decomp"), showWarnings = FALSE, recursive = TRUE)
+dir.create(here("GlobalViolence","Figures","GBD","Decomp"), showWarnings = FALSE, recursive = TRUE)
 # variant
 vnt  <- "mid"
 yr   <- 2017
 
-
-GPI      <- read.csv(file.path("Data","Inputs","GPI","GPI_ISO3.csv"),stringsAsFactors=FALSE)
+# TR 17-2-2020: I didn't have this file :-/ 
+# Code from here down not rerun
+GPI      <- read.csv(here("GlobalViolence","Data","Inputs","GPI","GPI_ISO3.csv"),stringsAsFactors=FALSE)
 setnames(GPI,"ISO3c","ISO3")
 GPI      <- data.table(GPI)
 

@@ -14,10 +14,9 @@ library(DemoTools)
 library(MortalitySmooth)
 library(reshape2)
 library(magrittr)
-# TR: any other cases?
-if(.Platform$OS.type == "unix"){
-  library(parallel)
-} 
+library(parallel)
+library(dplyr)
+ 
 if(.Platform$OS.type == "windows"){
   library(parallelsugar)
 } 
@@ -108,7 +107,11 @@ GBD.mono.ms <- function(.SD, omega=110,lambda=.1,mort="h"){
 	
 	# split it to single ages using monotonic spline over cumulative exposure.
 	# it's fast and sufficient, since we only use this as an offset.
-	off1   <- splitMono(offset, AgeInt = age2int(Age = x, OAvalue = nlast))[-1]
+	# TR: this way we let nlast do the work
+	off1   <- graduate_mono(offset, 
+	                        AgeInt = age2int(Age = x, OAvalue = nlast), 
+	                        Age = x,
+	                        OAG = FALSE)[-1] 
 	off1[off1<0] <- 0
 	
 	# spread rates over single ages within intervals
@@ -189,12 +192,14 @@ variants <- c("low","mid","upp")
 
 for (i in 1:length(variants)){
   GBDi <- readRDS(file.path(gbd.folder, paste0("GBD",variants[i],".rds"))) 
-    GBDi %>% split(list(GBDi$location,GBDi$sex,GBDi$year), drop = TRUE) %>% 
-	  mclapply(GBD.chunk, mc.cores = (detectCores() - 1)) %>% 
+  GBDi %>% 
+    split(list(GBDi$location,GBDi$sex,GBDi$year), drop = TRUE) %>% 
+    mclapply(GBD.chunk,mc.cores = (detectCores() - 1)) %>% 
 	  rbindlist() %>% 
 	  saveRDS(file = here("GlobalViolence","Data","Single","GBD",paste0("GBD",variants[i],".rds")))
 	gc()
 }
+
 
 # these are not 'finalized' still, as the pclm closeout isn't demographically informed, 
 # and can go haywire. Next step DataPrep_Closeout.R
@@ -205,10 +210,15 @@ locs<- readRDS(file.path(gbd.folder, paste0("GBD",variants[i],".rds"))) %>%
 # diagnostic flipbooks
 for (i in 1:3){
 	GBDi <- readRDS(here("GlobalViolence","Data","Single","GBD",paste0("GBD",variants[i],".rds")))
+	GBDi <- GBDi %>% 
+	  mutate(sex = as.character(sex),
+	         location = as.character(location))
 	
 	pdf(here("GlobalViolence","Figures","GBD","Closeout","pclm",paste0("Diagnostic_GBD",variants[i],"males_pclm.pdf")))
 	for (l in 1:length(locs)){
-		M <- acast(GBDi[sex == 1 & location == locs[l]], age~year, value.var = "Ma")
+		M <- acast(filter(GBDi,
+		                  sex == "Male",
+		                  location == locs[l]), age~year, value.var = "Ma")
 		matplot(0:110, M, ylim = c(1e-6, 1.5), log = 'y', type = 'l', lty = 1, col = "#00000088",
 				main = locs[l])
 	}
@@ -216,7 +226,9 @@ for (i in 1:3){
 	
 	pdf(here("GlobalViolence","Figures","GBD","Closeout","pclm",paste0("Diagnostic_GBD",variants[i],"_females_pclm.pdf")))
 	for (l in 1:length(locs)){
-		M <- acast(GBDi[sex == 2 & location == locs[l]], age~year, value.var = "Ma")
+		M <- acast(filter(GBDi,
+		                  sex == "Female",
+		                  location == locs[l]), age~year, value.var = "Ma")
 		matplot(0:110, M, ylim = c(1e-6, 1.5), log = 'y', type = 'l', lty = 1, col = "#00000088",
 				main = locs[l])
 	}
@@ -224,7 +236,6 @@ for (i in 1:3){
 	
 	rm(GBDi);gc()
 }
-
 
 
 # end

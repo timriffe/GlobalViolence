@@ -136,7 +136,7 @@ file.remove(file.path(who.folder, fls))
 # you'll receive confirmation email immediately,
 # but files will take time to generate
 
-# The data will be made available in 9 different zip files
+# The data will be made available in 10 different zip files
 # get a url by right clicking the link and select "copy url" or similar,
 # then paste as character strings, like below. YOUR link will be different
 # than this one, which will likely expire.
@@ -144,37 +144,37 @@ file.remove(file.path(who.folder, fls))
 # EASIER:
 # or notice that the links are the same except the last digit, find the pattern
 # YOU NEED TO CHANGE THIS PATH 
-
-links <- paste0("http://s3.healthdata.org/gbd-api-2017-public/e2c073307b2615cda33b73350273cd9e_files/IHME-GBD_2017_DATA-e2c07330-",
-		1:10,".zip")
-
-# now do bulk download like so
-for (i in 1:length(links)){
-	this.name <- file.path(gbd.folder, paste0("GBD", i, ".zip"))
-	 download.file(url = links[i],
-	 		# simplify names of zip files...
-	 		destfile = this.name)
-	# and unpack them
-	unzip(this.name, exdir = gbd.folder)
-}
-
-# get csv names
-gbdcsvs <- list.files(gbd.folder, pattern = ".csv")
-gbdcsvs <- gbdcsvs[!gbdcsvs %in% c("GBD_ISO3.csv", "GBD_Countries.csv")]
-# read and rbind in one go
-GBD <- do.call("rbind", lapply(file.path(gbd.folder,gbdcsvs), fread))
-
-# save as Rdata:
-saveRDS(GBD, file = file.path(gbd.folder,"GBD.rds"))
-
-# remove redundant files:
-fls  <- list.files(gbd.folder)
-fls  <- fls[!fls%in% c("GBD.rds","citation.txt","GBD_ISO3.csv", "GBD_Countries.csv")]
-file.remove(file.path(gbd.folder,fls))
-
-# remove from memory
-rm(GBD)
-gc()
+  
+  links <- paste0("http://s3.healthdata.org/gbd-api-2017-public/b7857f18d8fc53b815cf821edf7f1ca3_files/IHME-GBD_2017_DATA-b7857f18-",
+  		1:10,".zip")
+  
+  # now do bulk download like so
+  for (i in 1:length(links)){
+  	this.name <- file.path(gbd.folder, paste0("GBD", i, ".zip"))
+  	 download.file(url = links[i],
+  	 		# simplify names of zip files...
+  	 		destfile = this.name)
+  	# and unpack them
+  	unzip(this.name, exdir = gbd.folder)
+  }
+  
+  # get csv names
+  gbdcsvs <- list.files(gbd.folder, pattern = ".csv")
+  gbdcsvs <- gbdcsvs[!gbdcsvs %in% c("GBD_ISO3.csv", "GBD_Countries.csv")]
+  # read and rbind in one go
+  GBD <- do.call("rbind", lapply(file.path(gbd.folder,gbdcsvs), fread))
+  
+  # save as Rdata:
+  saveRDS(GBD, file = file.path(gbd.folder,"GBD.rds"))
+  
+  # remove redundant files:
+  fls  <- list.files(gbd.folder)
+  fls  <- fls[!fls%in% c("GBD.rds","citation.txt","GBD_ISO3.csv", "GBD_Countries.csv")]
+  file.remove(file.path(gbd.folder,fls))
+  
+  # remove from memory
+  rm(GBD)
+  gc()
 
 # ----------------------------------------------------------------- #
 # IHME lifetables                                                   #
