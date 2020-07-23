@@ -1,5 +1,5 @@
 ##to update my gtihub from Tim's
  git checkout master
- git pull https://github.com/timriffe/GlobalVilence
+ git pull https://github.com/timriffe/GlobalViolence
  git push origin master
  
