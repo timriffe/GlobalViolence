@@ -14,6 +14,10 @@ library(DemoTools)
 library(ungroup)
 library(reshape2)
 library(tidyverse)
+library(parallel)
+if(.Platform$OS.type == "windows"){
+  library(parallelsugar)
+} 
 
 
 GBD.closeout <- function(.SD,
@@ -33,8 +37,8 @@ GBD.closeout <- function(.SD,
 }
 
 
-dir.create(file.path("Data","Closeout","GBD"),recursive=TRUE,showWarnings=FALSE)
-dir.create(file.path("Figures","GBD","Closeout","ggompertz"),recursive=TRUE,showWarnings=FALSE)
+dir.create(here("GlobalViolence","Data","Closeout","GBD"),recursive=TRUE,showWarnings=FALSE)
+dir.create(here("GlobalViolence","Figures","GBD","Closeout","ggompertz"),recursive=TRUE,showWarnings=FALSE)
 
 variants <- c("low","mid","upp")
 
@@ -65,11 +69,11 @@ for (i in 1:3){
 	GBDi <-  readRDS(
 							here("GlobalViolence","Data","Closeout","GBD",
 									paste0("GBD",variants[i],"_ggompertz_65_90_65.rds")))
-	
+	locs <- GBDi %>% pull(location) %>% unique()
 	pdf(here("GlobalViolence","Figures","GBD","Closeout","ggompertz",
 	         paste0("Diagnostic_GBD",variants[i],"_males_ggompertz_65_90_65.pdf")))
 	for (l in 1:length(locs)){
-		M <- acast(GBDi[sex == 1 & location == locs[l]], age~year, value.var = "Ma")
+		M <- acast(GBDi[sex == "Male" & location == locs[l]], age~year, value.var = "Ma")
 		matplot(0:110, M, ylim = c(1e-6, 1.5), log = 'y', type = 'l', lty = 1, col = "#00000088",
 				main = locs[l])
 	}
@@ -78,7 +82,7 @@ for (i in 1:3){
 	pdf(here("GlobalViolence","Figures","GBD","Closeout","ggompertz",
 	         paste0("Diagnostic_GBD",variants[i],"_females_ggompertz_65_90_65.pdf")))
 	for (l in 1:length(locs)){
-		M <- acast(GBDi[sex == 2 & location == locs[l]], age~year, value.var = "Ma")
+		M <- acast(GBDi[sex == "Female" & location == locs[l]], age~year, value.var = "Ma")
 		matplot(0:110, M, ylim = c(1e-6, 1.5), log = 'y', type = 'l', lty = 1, col = "#00000088",
 				main = locs[l])
 	}

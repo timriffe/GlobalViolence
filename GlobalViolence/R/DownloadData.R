@@ -144,9 +144,10 @@ file.remove(file.path(who.folder, fls))
 # EASIER:
 # or notice that the links are the same except the last digit, find the pattern
 # YOU NEED TO CHANGE THIS PATH 
-  
+
+# This used to be 10 files, but now it's 1?
   links <- paste0("http://s3.healthdata.org/gbd-api-2017-public/b7857f18d8fc53b815cf821edf7f1ca3_files/IHME-GBD_2017_DATA-b7857f18-",
-  		1:10,".zip")
+  		1:1,".zip")
   
   # now do bulk download like so
   for (i in 1:length(links)){
@@ -193,11 +194,12 @@ sx  <- c("MALE","FEMALE")
 
 # this part u should verify, as urls may change:
 # just make sure to chop it and paste together like so:
-links <- paste0("https://cloud.ihme.washington.edu/index.php/s/2JLHyPXCnZQyd9Q/download?path=%2FLife%20Tables&files=IHME_GBD_2017_LIFE_TABLES_",
+links <- paste0("https://cloud.ihme.washington.edu/s/2JLHyPXCnZQyd9Q/download?path=%2FLife%20Tables&files=IHME_GBD_2017_LIFE_TABLES_",
 		YRSX,
 		"_Y2018M11D08.zip"   # if they do a version change then this would change I guess
 		)
-
+getOption("timeout")
+options(timeout=100)
 # now do bulk download like so
 for (i in 1:length(links)){
 			this.name <- file.path(ihme.folder,paste0("IHME",i,".zip"))
@@ -206,13 +208,14 @@ for (i in 1:length(links)){
 					destfile = this.name)
 #			# and unpack them
 			unzip(this.name, exdir = ihme.folder)
+			Sys.sleep(1)
 }		
 		
 # and read into single file like so:
 
 # get csv names
 ihmecsvs <- list.files(ihme.folder, pattern = ".CSV")
-
+length(ihmecsvs)
 # read and rbind in one go
 
 # let's do this in 8 bite-sized chunks so we don't risk memory overload
@@ -290,7 +293,7 @@ download.file(url = wpp.url,
 		# simplify names of zip files...
 		destfile = file.path(wpp.folder,"WPPpop.csv"))
 
-WPPpop <- read.csv(file.path(wpp.folder,"WPPpop.csv"))
+WPPpop <- readr::read_csv(file.path(wpp.folder,"WPPpop.csv"))
 WPPpop <- data.table(WPPpop)
 saveRDS(WPPpop, file = file.path(wpp.folder,"WPPpop.rds"))
 rm(WPPpop);gc()

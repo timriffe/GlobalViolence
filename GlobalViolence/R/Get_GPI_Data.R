@@ -26,9 +26,9 @@ GPI.dt         <- melt.data.table(data = GPI,id.vars = 1) %>%
   mutate(rank = gsub(rank,pattern = "=", replacement = ""),
          rank = as.integer(rank)) %>% 
   setnames(old = "Country", new = "country") %>% 
-  mutate(ISO3c=countrycode(GPI.dt$country, "country.name", "iso3c"))
+  mutate(ISO3c=countrycode(country, "country.name", "iso3c"))
 
-  codelist$country.name.en
+
 
 
 
@@ -49,8 +49,8 @@ GPI_ISO3<-GPI.dt %>%
 #View(GPI_ISO3)
 
 # TR modified:
-dir.create(file.path("Data","Inputs","GPI"), showWarnings = FALSE, recursive = TRUE)
-write.table(GPI_ISO3,file.path("Data","Inputs","GPI","GPI_ISO3.csv"), sep = ",", row.names = FALSE)
+dir.create(here("GlobalViolence","Data","Inputs","GPI"), showWarnings = FALSE, recursive = TRUE)
+write.table(GPI_ISO3,here("GlobalViolence","Data","Inputs","GPI","GPI_ISO3.csv"), sep = ",", row.names = FALSE)
 
 
 

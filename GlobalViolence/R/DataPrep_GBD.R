@@ -67,21 +67,21 @@ MID <- dcast(GBD, ISO3 + location + year + sex + age ~ metric + cause,
 MID <- as.data.table(MID)
 MID <- MID[,.(M_a = M_a/1e5, M_h = M_h/1e5, M_w = M_w/1e5, D_a = D_a, D_h = D_h, D_w = D_w), by=.(ISO3,location,year,sex,age)]
 setnames(MID, colnames(MID), new = gsub(pattern = "_", replace = "", colnames(MID)))
-saveRDS(MID, file = file.path("GlobalViolence","Data","Grouped","GBD","GBDmid.rds")) ; rm(MID) ; gc()
+saveRDS(MID, file = here("GlobalViolence","Data","Grouped","GBD","GBDmid.rds")) ; rm(MID) ; gc()
 
 
 UPP <- dcast(GBD, ISO3 + location + year + sex + age ~ metric + cause, value.var = "upper")
 UPP <- as.data.table(UPP)
 UPP <- UPP[,.(M_a = M_a/1e5, M_h = M_h/1e5, M_w = M_w/1e5, D_a = D_a, D_h = D_h, D_w = D_w),by=.(ISO3,location,year,sex,age)]
 setnames(UPP, colnames(UPP), new = gsub(pattern = "_", replace = "", colnames(UPP)))
-saveRDS(UPP, file = file.path("GlobalViolence","Data","Grouped","GBD","GBDupp.rds")) ; rm(UPP) ; gc()
+saveRDS(UPP, file = here("GlobalViolence","Data","Grouped","GBD","GBDupp.rds")) ; rm(UPP) ; gc()
 
 
 LOW <- dcast(GBD, ISO3 + location + year + sex + age ~ metric + cause, value.var = "lower")
 LOW<-as.data.table(LOW)
 LOW <- LOW[,.(M_a = M_a/1e5, M_h = M_h/1e5, M_w = M_w/1e5, D_a = D_a, D_h = D_h, D_w = D_w),by=.(ISO3,location,year,sex,age)] 
 setnames(LOW, colnames(LOW), new = gsub(pattern = "_", replace = "", colnames(LOW)))
-saveRDS(LOW, file = file.path("GlobalViolence","Data","Grouped","GBD","GBDlow.rds")) ; rm(LOW) ; gc()
+saveRDS(LOW, file = here("GlobalViolence","Data","Grouped","GBD","GBDlow.rds")) ; rm(LOW) ; gc()
 
 
 # end (still prefer single ages tho)

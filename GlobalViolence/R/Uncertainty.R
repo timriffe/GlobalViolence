@@ -39,7 +39,7 @@ for (i in 1:length(variants)){
 	saveRDS(GBDi, file = here("GlobalViolence","Data","Results","GBD",paste0("GBD",variants[i],".rds")))
 	rm(GBDi);gc()
 }
-A <- readRDS(file = here("GlobalViolence","Data","Results","GBD",paste0("GBD",variants[i],".rds")))
+# A <- readRDS(file = here("GlobalViolence","Data","Results","GBD",paste0("GBD",variants[i],".rds")))
 
 
 # Next file, for example Comparison.R or Relationships.R
