@@ -3,16 +3,12 @@
 
 library(here)
 library(data.table)
-# install if necessary
-#library(devtools)
-#install_github("timriffe/DistributionTTD/DistributionTTD/R/DistributionTTD")
-#install_github("timriffe/DemoTools")
 library(DemoTools)
 library(DistributionTTD)
 library(DemoDecomp)
 library(readr)
-library(tidyverse)
-source(here("GlobalViolence","R","Functions.R"))
+
+source(here("GlobalViolence","R","01_Functions.R"))
 
 dir.create(here("GlobalViolence","Figures","GBD","Decomp"), showWarnings = FALSE, recursive = TRUE)
 # variant
@@ -137,9 +133,6 @@ save(DECed,file=here("GlobalViolence","Data","Results","GBD","DECed10_HIGHVIO.rd
 
 DECed2  <- HIGHVIO2[,decomp_edagger(.SD),by=list(ISO3,sex)]
 save(DECed2,file=here("GlobalViolence","Data","Results","GBD","DECed10_HIGHVIO2.rds"))
-
-# (i.e. tempoirary edagger 10-60)
-#DECedt <- HIGHVIO[,decomp_edagger_temp(.SD,n=50),by=list(ISO3,Sex)]
 
 # plot sd decomp results in flipbooks
 pdf(here("GlobalViolence","Figures","GBD","Decomp","Decomp_sd_Males_FlipBook.pdf"))

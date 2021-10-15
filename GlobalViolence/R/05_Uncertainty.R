@@ -2,9 +2,9 @@
 # Author: tim
 ###############################################################################
 
-source(here("GlobalViolence","R","Functions.R"))
+source(here("GlobalViolence","R","01_Functions.R"))
 # install if necessary
-library(devtools)
+# library(devtools)
 #install_github("timriffe/DistributionTTD/DistributionTTD/R/DistributionTTD")
 #install_github("timriffe/DemoTools")
 library(here)
