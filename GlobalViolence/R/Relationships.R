@@ -1,17 +1,9 @@
 # this file can be run as soon as Data/Results is populated,
-# following Uncertainty.R. Right now just written for GBD results
+# following 06_Uncertainty.R. Right now just written for GBD results
 # here we produce a bunch of figures. These are visual diagnostics
 # and not presentation graphics.
 
-# Author: tim
-###############################################################################
-
-me <- system("whoami",intern=TRUE)
-
-# augment this as needed
-if (me == "tim"){
-	setwd("/home/tim/git/GlobalViolence/GlobalViolence")
-}
+# Uncertain if this step enters into the paper at this point
 
 library(data.table)
 
