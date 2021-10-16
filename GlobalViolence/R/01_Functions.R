@@ -127,6 +127,172 @@ decomp_edagger <- function(.SD,Age=10){
 	data.table(data.frame(Age=0:110,comp))
 }
 
+###
+# Functions used in DataPrep_GBD for graduation:
+
+
+# use this for all-cause mortality graduation.
+GBD.pclm <- function(.SD, omega = 110, mort = "a"){
+  
+  # determine which variables to use
+  Dx     <- paste0("D",mort)
+  Mx     <- paste0("M",mort)
+  
+  # siphon off vectors to use, throw out IMR
+  x      <- .SD$age[-1]
+  y      <- .SD[[Dx]][-1]
+  m      <- .SD[[Mx]][-1]
+  
+  n      <- nrow(.SD)
+  
+  if (all(is.na(m))){
+    return(rep(NA,111))
+  }
+  # just retain IMR, no problem
+  m0     <- .SD[[Mx]][1]
+  
+  if (any(is.na(y)) | any(is.na(m))){
+    rmind <- is.na(y) | is.na(x)
+  }
+  
+  
+  # how wide open interval, for practical purposes
+  nlast  <- omega - max(x) + 1
+  
+  # back out exposure
+  offset <- y / m
+  
+  # split exposure using pclm...
+  off1   <- pclm(x = x, y = offset, nlast = nlast, control = list(lambda = 1 / 1e6))$fitted
+  
+  # possibly deflate counts & exposures for splitting- this was breaking
+  # in some very large populations. Odd.
+  fac    <- ifelse(sum(y) > 2e6,10,1)
+  
+  # split counts using split exposure as offset returns rates
+  M      <- pclm(x = x, 
+                 y = y / fac, 
+                 nlast = nlast, 
+                 offset = off1 / fac, 
+                 control = list(lambda = 1))$fitted
+  M[is.nan(M)] <- 0
+  
+  # append to saved IMR
+  M      <- c(m0, M)  
+  M
+}
+
+# use this for homicide and 'other violence' graduation
+GBD.mono.ms <- function(.SD, omega=110,lambda=.1,mort="h"){
+  
+  # determine which variables to use
+  Dx     <- paste0("D",mort)
+  Mx     <- paste0("M",mort)
+  
+  # siphen off vectors
+  x      <- .SD$age
+  y      <- .SD[[Dx]]
+  m      <- .SD[[Mx]]
+  
+  # backstop in case no counts
+  if (all(is.na(m))){
+    return(rep(NA,111))
+  }
+  
+  if (all(m == 0)){
+    return(rep(0,111))
+  }
+  
+  
+  # don't touch infant mort. Derivative too high, messes up splines
+  # of all kinds. Until Carl Schmertmann boxes up his nifty solution.
+  m0     <- .SD[[Mx]][1]
+  
+  # over how many ages do we want to distribute the open age group?
+  # Here no one lives beyond 110
+  nlast  <- omega - max(x) + 1
+  
+  # back out exposure from rates & counts. Sometimes it's hideous.
+  offset <- y / m
+  
+  # split it to single ages using monotonic spline over cumulative exposure.
+  # it's fast and sufficient, since we only use this as an offset.
+  # TR: this way we let nlast do the work
+  off1   <- graduate_mono(offset, 
+                          AgeInt = age2int(Age = x, OAvalue = nlast), 
+                          Age = x,
+                          OAG = FALSE)[-1] 
+  off1[off1<0] <- 0
+  
+  # spread rates over single ages within intervals
+  m5     <- rep(m, times = age2int(Age = x, OAvalue = nlast))
+  
+  # assign 0 weights to pathological cases
+  w      <- rep(1,110)
+  ind    <- off1 == 0 | is.na(off1) | is.infinite(off1)
+  w[ind] <- 0
+  
+  # first step, 'blocky' hypothetical counts that we'll smooth
+  d      <- m5[-1] * off1
+  d[ind] <- 0
+  
+  # if rates are too low things break ¯\_(ツ)_/¯
+  # so we keep the 'blocky' rates
+  if (floor(sum(d)) < 10){
+    return(m5)
+  } 
+  
+  # But there are some cases where we can make the smoother 
+  # work by inflating counts+rates. So the trick is to inflate,
+  # then smooth, then deflate by sae factor
+  if (sum(d) < 100){
+    fac <- 100
+  } else {
+    fac <- 1
+  }
+  d      <- d * fac
+  
+  # The smoother function. Sometimes it complains even though
+  # it finds an acceptible solution.
+  mod    <- suppressWarnings(Mort1Dsmooth(
+    x = 1:110, 
+    y = d, 
+    offset = log(off1), 
+    w = w, 
+    lambda = lambda, # gives as arg
+    method = 3))
+  
+  # append smoothed rates (deflated) to saved infant mort
+  mx     <- c(m0, exp(mod$logmortality) / fac)
+  mx
+}
+
+# combines the prior two, operating on and returning a chunk
+GBD.chunk <- function(.SD,omega=110){
+  
+  # graduate the 3 mortality vectors.
+  # I really wish I knew of a way to do a compositional graduation
+  # of all 3 at once...
+  M  <- suppressWarnings(GBD.pclm(.SD, omega = 110,mort = "a"))
+  Mh <- GBD.mono.ms(.SD, omega = 110, mort = "h")
+  Mw <- GBD.mono.ms(.SD, omega = 110, mort = "w")
+  # Mh + Mw are here not guaranteed to be < M,
+  # so will have to check for that. Unlikely as
+  # they are most often orders of magnitude different
+  
+  data.table(data.frame(
+    ISO3 = rep(.SD$ISO3[1],111),
+    location = rep(.SD$location[1], 111),
+    year = rep(.SD$year[1], 111),
+    sex = rep(.SD$sex[1], 111),
+    age = 0:110,
+    Ma = M, Mh = Mh, Mw = Mw))
+}
+
+
+
+
+
 # deprecated test code.
 # faster calculation steps for taking an age cause vector and calculating edagger from it for a truncated age range.
 # meaning that years lost are also truncated! Be careful to see if this is used in practice
