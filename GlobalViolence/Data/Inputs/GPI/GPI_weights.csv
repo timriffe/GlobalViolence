@@ -1,0 +1,24 @@
+Type,Indicator,Weight
+Internal Peace,Perceptions of Criminality,3
+Internal Peace,Police Rate,3
+Internal Peace,Homicide Rate,4
+Internal Peace,Incarceration Rate,3
+Internal Peace,Access to Small Arms,3
+Internal Peace,Intensity of Internal Conflict,5
+Internal Peace,Violent Demonstrations,3
+Internal Peace,Violent Crime,4
+Internal Peace,Political Instability,4
+Internal Peace,Political Terror Scale,4
+Internal Peace,Weapons Imports,2
+Internal Peace,Terrorism Impact,2
+Internal Peace,Deaths from Internal Conflict,5
+Internal Peace,Internal Conflicts Fought,2.56
+External Peace,Military Expenditure (% GDP),2
+External Peace,Armed Services Personnel Rate,2
+External Peace,UN Peacekeeping Funding,2
+External Peace,Nuclear and Heavy Weapons,3
+External Peace,Weapons Exports,3
+External Peace,Refugees and IDPs,4
+External Peace,Neighbouring Countries Relations,5
+External Peace,External Conflicts Fought,2.28
+External Peace,Deaths from External Conflict,5
