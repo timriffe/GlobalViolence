@@ -6,7 +6,10 @@ if (! "pacman" %in% rownames(installed.packages())){
 
 library(pacman)
 
-CRAN_packages <- c("here","data.table","countrycode","ungroup","reshape2","magrittr","parellel","dplyr","readr")
+CRAN_packages <- c("here","data.table","countrycode","ungroup","reshape2","magrittr","parallel","dplyr","readr",
+                   "readxl","openxlsx","tidyverse","rio","purrr","viridis","RColorBrewer","ggpubr",
+                   "lintr","sf","cowplot","gridExtra","grid","stringr","biscale","sp","cartography","tmap",
+                   "magrittr")
 
 # Install required CRAN packages if not available yet
 if(!sum(!p_isinstalled(CRAN_packages))==0) {
@@ -16,7 +19,7 @@ if(!sum(!p_isinstalled(CRAN_packages))==0) {
   )
 }
 
-GITHUB_packages <- c("DemoTools","MortalitySmooth","parallelsugar", "DistributionTTD", "DemoDecomp")
+GITHUB_packages <- c("DemoTools","MortalitySmooth","parallelsugar", "DistributionTTD", "DemoDecomp","ggrastr")
 
 
 if (!p_isinstalled("DemoTools")) {
@@ -36,6 +39,9 @@ if (!p_isinstalled("DemoDecomp")){
   remotes::install_github("timriffe/DemoDecomp")
 }
 
+if (!p_isinstalled("ggrastr")){
+  devtools::install_github('VPetukhov/ggrastr')
+}
 
 
 
