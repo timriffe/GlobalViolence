@@ -91,7 +91,7 @@ gpi_test<- gpi_ind %>%
   mutate(Year=as.numeric(Year))
 
 # testing whether the indicator we created with the weighted average yields a different
-# ranking, to check its stability and whether it´s consistent.
+# ranking, to check its stability and whether it?s consistent.
 
 gpi.test.rank<-gpi_test %>% 
   select(c(1:4,10)) %>%
@@ -342,7 +342,7 @@ labels_sdx_int_pooled<-GPI_int_pooled %>%                             # labels f
 labels_sdx_int_pooled$corr_sdx<-sprintf("italic(r) == %.3f", labels_sdx_int_pooled$corr_sdx)
 
 
-#Figure Pooled Results - don´t know yet whether JM will add this Figure or when. So left it as FigS3
+#Figure Pooled Results - don?t know yet whether JM will add this Figure or when. So left it as FigS3
 # here but we can take out later or decide how to rename it/take it out.
 
 pdf(file = here("GlobalViolence","Figures","SuppMaterial","FigS3.pdf"), width = 19,height = 5) 
@@ -364,10 +364,47 @@ ggplot(GPI_int_pooled, aes(sdx,score_domain, group=sex, color=sex))+
         strip.text = element_text(size=15))
 dev.off()
 
+
+# ---------------------------------------------------------------------------------------------------------------------#
+# Making the same graph but for life expectancy. Only for latest year, 2017
+# Relationship between GPI (Internal violence) and life expectancy conditioning at age 10, 15, 20, 25, and 30. 
+# Life expectancy is less correlated to Internal Violence than Lifespan disparity
+#----------------------------------------------------------------------------------------------------------------------#
+
+GPI_int<-gpi_domain_score %>% 
+  filter(Type=="Internal Peace" & 
+           year==2017 & 
+           age%in%c(10,15,20,25,30))
+
+labels_ex_int<-GPI_int %>%                             # labels for graphing
+  group_by(year,sex, age, corr_ex) %>% 
+  dplyr::summarise()
+labels_ex_int$corr_ex<-sprintf("italic(r) == %.3f", labels_ex_int$corr_ex)
+
+
+pdf(file = here("GlobalViolence","Figures","SuppMaterial","FigS4.pdf"), width = 19,height = 5) 
+ggplot(GPI_int, aes(ex,score_domain, group=sex, color=sex))+
+  geom_point_rast(aes(colour=sex, fill=sex),shape = 21,colour = "black",alpha=1/10, size=4,show.legend = FALSE)+ 
+  geom_point_rast(alpha=1/40, size=3.3)+
+  facet_grid(.~age)+  
+  geom_smooth(method=lm, se=FALSE, size=1.5)+
+  scale_y_continuous(name="GPI score",limits=c(1,4))+
+  scale_x_continuous(name="Life Expectancy",limits=c(10,80))+
+  geom_text(x = 20, y = 3.9, aes(label = corr_ex),size=5, parse=T,data = labels_ex_int %>% filter(sex=="Female"),show.legend = F)+
+  geom_text(x = 20, y = 3.4, aes(label = corr_ex), size=5,parse=T,data = labels_ex_int %>% filter(sex=="Male"),show.legend = F)+
+  scale_color_manual(values = c('#882255','#009988')) +
+  theme(legend.position = "bottom")+
+  theme_bw(base_size = 16) +
+  theme(legend.position = "bottom",
+        strip.background = element_rect(fill=NA),
+        strip.text = element_text(size=15))
+dev.off()
+
+# ----------------------------------------------------------------------------------------------------------------------#
 # saving the data with internal peace indicator only "GBD_GPI_int.rds" 
 # and with both indicator types (internal and external - "GBD_GPI_int_ext.rds") for building the maps and 
 # Figure 2 (bivariate scatterplot) in the main text.
-
+# ----------------------------------------------------------------------------------------------------------------------#
 
 saveRDS(GPI_int, file = file.path(here("GlobalViolence","Data","Results","GPI", "GBD_GPI_int.rds")))
 saveRDS(gpi_domain_score, file = file.path(here("GlobalViolence","Data","Results","GPI", "GBD_GPI_int_ext.rds")))
