@@ -40,7 +40,7 @@ if (!p_isinstalled("DemoDecomp")){
 }
 
 if (!p_isinstalled("ggrastr")){
-  devtools::install_github('VPetukhov/ggrastr')
+  remotes::install_github('VPetukhov/ggrastr')
 }
 
 

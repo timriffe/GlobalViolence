@@ -33,7 +33,7 @@ dir.create(here("GlobalViolence","Figures","BivariateScatterPlots"), showWarning
 # loading data for internal Peace and selecting only latest year and age 10 for analysis
 
 GPI_int<- readRDS(here("GlobalViolence","Data","Results","GPI","GBD_GPI_int.rds"))%>% 
-  filter(year==2017 & age==10)
+  dplyr::filter(year==2017 & age==10)
 
   
 # grabbing world data
