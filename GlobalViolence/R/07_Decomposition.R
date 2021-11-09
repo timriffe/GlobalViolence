@@ -22,7 +22,7 @@ yr   <- 2017
 
 # TR 17-2-2020: I didn't have this file :-/ 
 # Code from here down not rerun
-#GPI      <- read_csv(here("GlobalViolence","Data","Inputs","GPI","GPI_ISO3.csv"))
+# GPI      <- read_csv(here("GlobalViolence","Data","Inputs","GPI","GPI_ISO3.csv"))
 #setnames(GPI,"ISO3c","ISO3")
 
 # Read in GPI score values for all years and score type (overall score).
