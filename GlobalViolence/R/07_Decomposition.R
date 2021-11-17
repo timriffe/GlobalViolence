@@ -1,6 +1,3 @@
-# Author: tim
-###############################################################################
-
 library(here)
 library(data.table)
 library(DemoTools)
@@ -15,19 +12,11 @@ dir.create(here("GlobalViolence","Figures","GBD","Decomp"), showWarnings = FALSE
 vnt  <- "mid"
 yr   <- 2017
 
-# TR 17-2-2020: I didn't have this file :-/ 
 # Code from here down not rerun
 GPI      <- read_csv(here("GlobalViolence","Data","Inputs","GPI","GPI_ISO3.csv"))
 setnames(GPI,"ISO3c","ISO3")
 GPI      <- data.table(GPI)
 
-# we calculate our own rank based on score- 
-# there were NAs for some reason in original
-# GPI      <- GPI[type == "score"]
-
-# library(reshape2)
-# acast(GPI, ISO3~year, value.var = "value")
-# GPI
 
 GPI[,rank := rank(score),by=list(year)]
 setorder(GPI, year, rank)
@@ -169,33 +158,6 @@ for (x in unique(DECed$ISO3)){
 }
 dev.off()
 
-
-
-
-
-
-#pdf(file.path("Figures","GBD","Decomp_EdaggerT_Males_FlipBook.pdf"))
-#for (x in unique(DECedt$ISO3)){
-#	
-#	X  <- as.matrix(DECedt[ISO3==x & Sex == 1,c(4:6)])
-#	
-#	p <- colSums(X,na.rm=TRUE) 
-#	P <- round(sum(p[2:3])/sum(p)*100,1)
-#	
-#	X[61:111,] <- NA
-#	X5 <- apply(X,2,groupAges)
-#	rownames(X5) <- NULL
-#	
-#	p <- colSums(X,na.rm=TRUE) 
-#	P <- round(sum(p[2:3])/sum(p)*100,1)
-#	if (P > 100){P <- 100}
-#	barplot(-t(X5),width=5,space=0,border=NA,
-#			xlim=c(10,60),las=1,col=c("#AAAAAA","#bc3905","#87021a"),
-#			ylim=c(0,1.5))
-#	axis(1)
-#	title(paste(x,"Males",P,"%"))
-#}
-#dev.off()
 
 
 

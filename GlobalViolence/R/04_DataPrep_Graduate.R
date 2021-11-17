@@ -1,10 +1,6 @@
-
-# Author: tim
-###############################################################################
-
-# In the first place, this script will be written for the GBD
+# In the first place, this script is written for the GBD
 # data (MID, LOW, UPP), but later it'll be expanded as needed 
-# for the comparison datasets.
+# for potential comparison datasets.
 
 library(here)
 #install.packages('ungroup')
@@ -82,45 +78,5 @@ for (i in 1:3){
 }
 
 
-# end
+# next step 05_DataPrep_Closeout.R
 # ---------------------------
-
-# deprecated:
-#graduateSmall <- function(x,y,off1,nlast){
-#	AgeInt <- age2int(x,OAvalue=nlast)
-#	if (sum(y) < 100){
-#		Mi <- splitUniform(Value = y,AgeInt = AgeInt)
-#		return(Mi / off1)
-#	} else {
-#		
-#		Mi     <- splitMono(Value = y,AgeInt = AgeInt)
-#		Mii    <- beers(Mi,Age=0:110)
-#		ind <- Mii < 0
-#		if (any(ind)){
-#			Mii[ind] <- Mi[ind]
-#		}
-#		
-#		return(rescaleAgeGroups(Mii,rep(1,111),y,AgeInt,recursive=FALSE,splitfun=splitUniform) / off1)
-#	}
-#}
-#ungroup.GBD <- function(.SD,omega=110){
-#	x      <- .SD$Age[-1]
-#	y      <- .SD$D[-1]
-#	m      <- .SD$M[-1]
-#	# just retain IMR, no problem
-#	m0     <- .SD$M[1]
-#	nlast  <- omega - max(x) + 1
-#	offset <- y / m
-#	off1   <- pclm(x=x,y=offset,nlast=nlast,control=list(lambda=1/1e6))$fitted
-#	fac <- ifelse(sum(.SD$D) > 2e6,10,1)
-#	M  <- pclm(x=x,y=y/fac,nlast=nlast,offset=off1/fac,control=list(lambda=1/1e6))$fitted
-#	M[is.nan(M)] <- 0
-#	Mh <- c(graduateSmall(x,.SD$Dh,off1,nlast))
-#	Mw <- c(graduateSmall(x,.SD$Dw,off1,nlast))
-#	data.table(data.frame(
-#					location=rep(.SD$location[1],111),
-#					year=rep(.SD$year[1],111),
-#					Sex =rep(.SD$Sex[1],111),
-#					Age=0:110,
-#					M=M,Mh=Mh,Mw=Mw))
-#}

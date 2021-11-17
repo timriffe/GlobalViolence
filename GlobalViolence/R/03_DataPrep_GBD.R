@@ -1,11 +1,4 @@
 
-# Author: tim
-###############################################################################
-
-#TR: oops: age_name, etc only appear if you select "both" for names vs codes.
-# if you select NAMES or CODES then it's just age. In the download instructions
-# it says select names, so gotta be consistent with that. 
-
 library(here)
 library(data.table)
 library(countrycode)
@@ -33,8 +26,6 @@ recvec <- c("<1 year" = 0, "1 to 4" = 1, "5 to 9" = 5, "10 to 14" = 10,
 		"95 plus" = 95)
 GBD$age <- recvec[GBD$age]
 
-#GBD[,c("age_name","age_id"):=NULL];gc()
-
 # More reshaping to match GHE: 3 files with MID, LOW, UPP.
 # Can use Rate and Number to recuperate exposure.
 
@@ -42,10 +33,6 @@ GBD$age <- recvec[GBD$age]
 recvec <- c("All causes" = "a", "Conflict and terrorism" = "w", "Interpersonal violence" = "h", 
 		"Executions and police conflict" = "w")
 GBD$cause <- recvec[GBD$cause]   
-
-# keep: location, metric, year, Sex, cause, Age
-#setnames(GBD,old = c("sex_id","location_name","metric_name"),c("sex","location","metric"))
-
 
 # reset names for metric:
 recvec = c("Number" = "D", "Rate" = "M")
@@ -84,20 +71,4 @@ setnames(LOW, colnames(LOW), new = gsub(pattern = "_", replace = "", colnames(LO
 saveRDS(LOW, file = here("GlobalViolence","Data","Grouped","GBD","GBDlow.rds")) ; rm(LOW) ; gc()
 
 
-# end (still prefer single ages tho)
-# Next step: DataPrep_Graduate.R
-
-# -------
-#
-#LOW <- local(get(load(file.path("Data","Grouped","GBD","GBDlow.Rdata"))))
-#DemoTools::LTabr(nMx=LOW$M[1:21],Age=c(0,1,seq(5,95,by=5)))
-#
-#UPP <- local(get(load(file.path("Data","Grouped","GBD","GBDupp.Rdata"))))
-#DemoTools::LTabr(nMx=UPP$M[1:21],Age=c(0,1,seq(5,95,by=5)))
-# exposure check too.
-#LOW$Dw[100]/LOW$Mw[100]
-#UPP$Dw[100]/UPP$Mw[100]
-
-#GBD <- local(get(load(file.path("Data","Grouped","GBD","GBDmid.Rdata"))))
-#dput(sort(unique(GBD$location)))
-#write.csv(sort(unique(GBD$location)),file=file.path("Data","Inputs","GBD","GBD_Countries.csv"),row.names=FALSE)
+# Next step: 04_DataPrep_Graduate.R

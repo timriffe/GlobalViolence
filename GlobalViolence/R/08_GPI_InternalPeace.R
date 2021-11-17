@@ -1,6 +1,5 @@
 #---------------------------------------------------------------------------------------------------#
 # GPI Internal Peace Indicator: Weighted Average Construction 
-# author: Vanessa di Lego
 #
 # Rebuilding the GPI indicator by internal and external peace domain, in order to construct an 
 # indicator for internal and external peace separately. The weights provided for each one of the
