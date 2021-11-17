@@ -4,6 +4,11 @@ library(DemoTools)
 library(DistributionTTD)
 library(DemoDecomp)
 library(readr)
+library(tidyverse)
+library(readxl)
+library(openxlsx)
+library(countrycode)
+library(janitor)
 
 source(here("GlobalViolence","R","01_Functions.R"))
 
@@ -13,10 +18,44 @@ vnt  <- "mid"
 yr   <- 2017
 
 # Code from here down not rerun
-GPI      <- read_csv(here("GlobalViolence","Data","Inputs","GPI","GPI_ISO3.csv"))
-setnames(GPI,"ISO3c","ISO3")
+# GPI      <- read_csv(here("GlobalViolence","Data","Inputs","GPI","GPI_ISO3.csv"))
+#setnames(GPI,"ISO3c","ISO3")
+
+# Read in GPI score values for all years and score type (overall score).
+# Bulk read the scores
+
+path <- here("GlobalViolence","Data",
+             "Inputs","GPI","GPI_scores_ind.xls")
+Year <- path %>%
+  excel_sheets() %>%
+  purrr::set_names()
+ranges <- list("A4:C167")
+GPI <- map2_df(Year,
+               ranges,
+               ~ read_excel(path, sheet = .x, range = .y),
+               .id = "Year") %>% 
+  clean_names() %>% 
+  rename(score = "overall_score") %>% 
+  mutate(ISO3=countrycode(country, "country.name", "iso3c"),
+         year=as.numeric(year)) 
+ 
+# Note: There is NA here because Kosovo is not listed as an ISO standard country. The unofficial 2 and 3-digit codes are used by the 
+# European Commission and others until Kosovo is assigned an ISO code. In addition, GBD has no mortality data
+# data for Kosovo; So we do not include it in the analysis.
+
 GPI      <- data.table(GPI)
 
+<<<<<<< HEAD
+=======
+
+# we calculate our own rank based on score- 
+# there were NAs for some reason in original
+# GPI      <- GPI[type == "score"]
+
+# library(reshape2)
+# acast(GPI, ISO3~year, value.var = "value")
+# GPI
+>>>>>>> 1a8ba69e5cef4234897362ab57ea5ebd447b15f6
 
 GPI[,rank := rank(score),by=list(year)]
 setorder(GPI, year, rank)
@@ -32,12 +71,16 @@ maxr     <- max(GPI[year==yr]$rank)
 GPIHIGH  <- GPI[year==yr & rank > (maxr - 25)]$ISO3
 
 
-GBD  <- readRDS(here("GlobalViolence","Data","Results","GBD",paste0("GBD",vnt,".rds")))
-GBD$sex <- as.character(GBD$sex)
+GBD  <- readRDS(here("GlobalViolence","Data","Results","GBD",paste0("GBD",vnt,".rds"))) %>% 
+  mutate(sex=as.character(sex),
+         year=as.numeric(year)) %>% 
+  left_join(GPI)
+
+#GBD$sex <- as.character(GBD$sex)
 #setnames(GBD,"ISO","ISO3")
 # merge in GPI
-GPI <- GPI %>% select(ISO3,year, rank,score)
-GBD <- GBD %>% left_join(GPI)
+#GPI <- GPI %>% select(ISO3,year, rank,score)
+#GBD <- GBD %>% left_join(GPI)
 
 setnames(GBD,"score","GPI")
 
