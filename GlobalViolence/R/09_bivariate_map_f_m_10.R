@@ -24,7 +24,7 @@ data(World)
 
 st_crs(World)
 
-#changing to Robinson system; Tim?s request, hope this is what he expected
+#changing to Robinson system; XXXXXX's request, hope this is what he expected
 
 world_rob<-st_transform(World, "+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
 
