@@ -2,16 +2,7 @@
 # data (MID, LOW, UPP), but later it'll be expanded as needed 
 # for potential comparison datasets.
 
-library(here)
-#install.packages('ungroup')
-library(data.table)
-library(ungroup)
-library(DemoTools)
-library(MortalitySmooth)
-library(reshape2)
-library(magrittr)
-library(parallel)
-library(dplyr)
+source(here("GlobalViolence","R","00_Install_Packages.R"))
  
 if(.Platform$OS.type == "windows"){
   library(parallelsugar)

@@ -1,7 +1,5 @@
 
-library(here)
-library(data.table)
-library(countrycode)
+source(here("GlobalViolence","R","00_Install_Packages.R"))
 
 gbd.folder <- here("GlobalViolence","Data","Inputs","GBD")
 

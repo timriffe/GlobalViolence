@@ -1,6 +1,5 @@
 
-library(here)
-library(data.table)
+source(here("GlobalViolence","R","00_Install_Packages.R"))
 
 # ------------------------------------ #
 # README

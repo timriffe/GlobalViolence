@@ -1,29 +1,9 @@
 #-----------------------------------------------------------------------------------------------#
 # Bivariate maps for women and men, at age 10, year 2017. In addition, bivariate scatterplots
 # for women and men, at age 10, year 2017, with Pearson's correlation coefficient printed.
-# author: Vanessa di Lego
 #-----------------------------------------------------------------------------------------------#
 
-library(tidyverse) 
-library(magrittr) 
-library(lintr) 
-library(sf) 
-library(cowplot) 
-library(data.table)
-library(countrycode)
-library(dplyr)
-library(here)
-library(ggpubr)
-library(ggplot2)
-library(gridExtra)
-library(grid)
-library(stringr)
-library(biscale)
-library(cowplot)
-library(sp)
-library(cartography)
-library(tmap)
-library(raster)
+source(here("GlobalViolence","R","00_Install_Packages.R"))
 
 # creating new file directories for bivariate map and bivariate scatter figures
 

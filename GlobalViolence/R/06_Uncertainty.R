@@ -1,10 +1,6 @@
-source(here:here("GlobalViolence","R","01_Functions.R"))
-# install if necessary
-library(here)
-library(DistributionTTD) # could compare w LifeIneq package on github?
-library(DemoTools)
-library(data.table)
 
+source(here("GlobalViolence","R","00_Install_Packages.R"))
+source(here:here("GlobalViolence","R","01_Functions.R"))
 dir.create(here("GlobalViolence","Data","Results","GBD"), showWarnings = FALSE, recursive = TRUE)
 
 # for now just GBD

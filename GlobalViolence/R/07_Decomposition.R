@@ -1,15 +1,4 @@
-library(here)
-library(data.table)
-library(DemoTools)
-library(DistributionTTD)
-library(DemoDecomp)
-library(readr)
-library(tidyverse)
-library(readxl)
-library(openxlsx)
-library(countrycode)
-library(janitor)
-
+source(here("GlobalViolence","R","00_Install_Packages.R"))
 source(here("GlobalViolence","R","01_Functions.R"))
 
 dir.create(here("GlobalViolence","Figures","GBD","Decomp"), showWarnings = FALSE, recursive = TRUE)

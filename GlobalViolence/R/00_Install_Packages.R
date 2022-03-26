@@ -9,7 +9,7 @@ library(pacman)
 CRAN_packages <- c("here","data.table","countrycode","ungroup","reshape2","magrittr","parallel","dplyr","readr",
                    "readxl","openxlsx","tidyverse","rio","purrr","viridis","RColorBrewer","ggpubr",
                    "lintr","sf","cowplot","gridExtra","grid","stringr","biscale","sp","cartography","tmap",
-                   "magrittr","ggplot2","patchwork","scales")
+                   "magrittr","ggplot2","patchwork","scales","raster")
 
 # Install required CRAN packages if not available yet
 if(!sum(!p_isinstalled(CRAN_packages))==0) {

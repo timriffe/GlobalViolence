@@ -14,21 +14,8 @@
 # https://www.visionofhumanity.org/wp-content/uploads/2020/10/GPI17-Report-1.pdf
 #----------------------------------------------------------------------------------------------------#
 
-library(readxl)
-library(openxlsx)
-library(data.table)
-library(countrycode)
-library(here)
-library(tidyverse)
-library(rio)
-library(purrr)
-library(magrittr)
-library(viridis)
-library(RColorBrewer)
-library(ggpubr)
-library(ggrastr)
-library(readr)
 
+source(here("GlobalViolence","R","00_Install_Packages.R"))
 # creating new file directories for figures and storing data with the new GPI internal peace indicator created
 
 dir.create(here("GlobalViolence","Data","Results","GPI"), showWarnings = FALSE, recursive = TRUE)

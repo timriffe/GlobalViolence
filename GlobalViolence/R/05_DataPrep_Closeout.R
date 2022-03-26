@@ -6,15 +6,8 @@
 # older ages may need to be overwritten using MortalityLaws if they are awful.
 
 # This script *follows* DataPrep_Graduate.R for now.
+source(here("GlobalViolence","R","00_Install_Packages.R"))
 
-library(here)
-library(data.table)
-library(MortalityLaws)
-library(DemoTools)
-library(ungroup)
-library(reshape2)
-library(tidyverse)
-library(parallel)
 if(.Platform$OS.type == "windows"){
   library(parallelsugar)
 } 
