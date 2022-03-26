@@ -36,7 +36,6 @@ GBD.closeout <- function(.SD,
 	.SD
 }
 
-
 dir.create(here("GlobalViolence","Data","Closeout","GBD"),recursive=TRUE,showWarnings=FALSE)
 dir.create(here("GlobalViolence","Figures","GBD","Closeout","ggompertz"),recursive=TRUE,showWarnings=FALSE)
 
@@ -65,6 +64,11 @@ for (i in 1:3){
 }
 
 # diagnostic flipbooks
+make_flipbooks <- FALSE
+if (make_flipbooks){
+  # make flip book, one page per country,
+  # one book per sex.
+  
 for (i in 1:3){
 	GBDi <-  readRDS(
 							here("GlobalViolence","Data","Closeout","GBD",
@@ -90,7 +94,6 @@ for (i in 1:3){
 	dev.off()
 	rm(GBDi);gc()
 }
+}
 
-# make flip book, one page per country,
-# one book per sex.
-
+# next step 06_Uncertainty.R

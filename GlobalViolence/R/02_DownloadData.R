@@ -8,11 +8,13 @@ library(data.table)
 # this script will require user intervention
 # in a few places, so please step through it
 # sequentially, reading annotations as you go
-# for any questions, contact tim riffe
-# ------------------------------------- #
+# for any questions, contact _masked for now_
+# ------------------------------------ #
 
-
-
+# ------------------------------------ #
+# Note: substantial portions of this code are 
+# not required, and are commented out.
+# ------------------------------------ #
 
 # base folders whose names we recycle throughout
 # file.path() used throughout under presumption that 
@@ -110,6 +112,10 @@ dir.create(gbd.folder, showWarnings = FALSE, recursive = TRUE)
 # ----------------------------------------------------------------- #
 
 # in browser, go to:
+# This one selects years 2000+
+# http://ghdx.healthdata.org/gbd-results-tool?params=gbd-api-2019-permalink/6be4e7149bf6b4f32ce65adc9651420f
+
+# This one selects years 1990+ and downloads now fail
 # http://ghdx.healthdata.org/gbd-results-tool?params=gbd-api-2017-permalink/e39887527afdc6b5e1cc14a5463befde
 # select 'get permalink'
 # select "download csv"
@@ -139,10 +145,10 @@ dir.create(gbd.folder, showWarnings = FALSE, recursive = TRUE)
 # EASIER:
 # or notice that the links are the same except the last digit, find the pattern
 # YOU NEED TO CHANGE THIS PATH 
-
-# This used to be 10 files, but now it's 1?
-  links <- paste0("http://s3.healthdata.org/gbd-api-2017-public/b7857f18d8fc53b815cf821edf7f1ca3_files/IHME-GBD_2017_DATA-b7857f18-",
-  		1:1,".zip")
+# On my last
+HowManyFilesAreThere <- 6
+links <- paste0("https://s3.healthdata.org/gbd-api-2019-public/cb201b3abc797778e2105e627c23f983_files/IHME-GBD_2019_DATA-cb201b3a-",
+  		1:HowManyFilesAreThere,".zip")
   
   # now do bulk download like so
   for (i in 1:length(links)){

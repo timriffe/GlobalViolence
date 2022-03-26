@@ -43,8 +43,10 @@ for (i in 1:length(variants)){
 
 # these are not 'finalized' still, as the pclm closeout isn't demographically informed, 
 # and can go haywire. Next step DataPrep_Closeout.R
-dir.create(file.path("Figures","GBD","Closeout","pclm"), showWarnings = FALSE, recursive = TRUE)
-
+make_flipbooks <- FALSE
+if (make_flipbooks){
+  dir.create(file.path("Figures","GBD","Closeout","pclm"), showWarnings = FALSE, recursive = TRUE)
+  
 locs<- readRDS(file.path(gbd.folder, paste0("GBD",variants[i],".rds"))) %>%
   pull(location) %>% unique()
 # diagnostic flipbooks
@@ -76,7 +78,7 @@ for (i in 1:3){
 	
 	rm(GBDi);gc()
 }
-
+}
 
 # next step 05_DataPrep_Closeout.R
 # ---------------------------

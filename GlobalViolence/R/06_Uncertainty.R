@@ -1,7 +1,5 @@
 source(here:here("GlobalViolence","R","01_Functions.R"))
 # install if necessary
-#remotes::install_github("timriffe/DistributionTTD/DistributionTTD/R/DistributionTTD")
-#remotes::install_github("timriffe/DemoTools")
 library(here)
 library(DistributionTTD) # could compare w LifeIneq package on github?
 library(DemoTools)

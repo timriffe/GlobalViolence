@@ -45,8 +45,6 @@ GPI <- map2_df(Year,
 
 GPI      <- data.table(GPI)
 
-<<<<<<< HEAD
-=======
 
 # we calculate our own rank based on score- 
 # there were NAs for some reason in original
@@ -55,7 +53,6 @@ GPI      <- data.table(GPI)
 # library(reshape2)
 # acast(GPI, ISO3~year, value.var = "value")
 # GPI
->>>>>>> 1a8ba69e5cef4234897362ab57ea5ebd447b15f6
 
 GPI[,rank := rank(score),by=list(year)]
 setorder(GPI, year, rank)
@@ -165,7 +162,7 @@ save(DECed,file=here("GlobalViolence","Data","Results","GBD","DECed10_HIGHVIO.rd
 
 DECed2  <- HIGHVIO2[,decomp_edagger(.SD),by=list(ISO3,sex)]
 save(DECed2,file=here("GlobalViolence","Data","Results","GBD","DECed10_HIGHVIO2.rds"))
-
+DECed2
 # plot sd decomp results in flipbooks
 pdf(here("GlobalViolence","Figures","GBD","Decomp","Decomp_sd_Males_FlipBook.pdf"))
 for (x in unique(DECsd$ISO3)){
@@ -178,7 +175,7 @@ dev.off()
 pdf(here("GlobalViolence","Figures","GBD","Decomp","Decomp_sd_Females_FlipBook.pdf"))
 for (x in unique(DECsd$ISO3)){
 	
-	X  <- as.matrix(DECsd[ISO3==x & Sex == "Female",c(4:6)])
+	X  <- as.matrix(DECsd[ISO3==x & sex == "Female",c(4:6)])
 	plot_testing(X,x,sx="Females",ylim=c(-.1,1.5))
 }
 dev.off()
@@ -187,7 +184,7 @@ dev.off()
 pdf(here("GlobalViolence","Figures","GBD","Decomp","Decomp_Edagger_Males_FlipBook.pdf"))
 for (x in unique(DECed$ISO3)){
 	
-	X  <- as.matrix(DECed[ISO3==x & Sex == 1,c(4:6)])
+	X  <- as.matrix(DECed[ISO3==x & sex == 1,c(4:6)])
 	plot_testing(X,x,sx="Males",ylim=c(-.1,1.7))
 }
 dev.off()
@@ -196,7 +193,7 @@ dev.off()
 pdf(here("GlobalViolence","Figures","GBD","Decomp","Decomp_Edagger_Females_FlipBook.pdf"))
 for (x in unique(DECed$ISO3)){
 	
-	X  <- as.matrix(DECed[ISO3==x & Sex == 2,c(4:6)])
+	X  <- as.matrix(DECed[ISO3==x & sex == 2,c(4:6)])
 	plot_testing(X,x,sx="Females",ylim=c(-.1,1))
 }
 dev.off()
