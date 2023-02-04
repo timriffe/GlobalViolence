@@ -1,7 +1,14 @@
 # GlobalViolence
 
-Joint work with Jose Manuel Aburto, Vanessa di Lego, Orsola Torrisi, Ridhi Kashyap, and Tim Riffe
-Presently in initial stages
+Code repository to accompany the manuscript: "A global assessment of the impact of violence on lifetime uncertainty"
+
+# Citation
+
+Aburto, J. M., di Lego, V., Riffe, T., Kashyap, R., van Raalte, A., & Torrisi, O. (2023). A global assessment of the impact of violence on lifetime uncertainty. Science Advances. Vol. 9 issue 5. DOI: [10.1126/sciadv.add9038](https://doi.org/10.1126/sciadv.add9038)
+
+# Basics
+
+This repository is also associated with the OSF reproducibility snapshot [https://osf.io/degjy/ ](https://osf.io/degjy/). There are more items in this GithuB repository than there are in the OSF one.
 
 To get started. Go to the R folder. Scripts are intended to be run in a sequence
 
