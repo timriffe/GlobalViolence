@@ -1,0 +1,7 @@
+These diagnostic flipbooks are produced in DataPrep_Graduate.R
+We notice that since pclm has no demographic priors, the 
+closeout mortality (in high ages, especially the extapolation
+beyond age 95) can be erratic and unrealistic. Due to visual examination
+of these flibooks we opt to strongly smooth old-age mortality using
+a flexible model: gamma gompertz falls somewhere between gompertz and 
+kannisto, depending, so it suits us. 

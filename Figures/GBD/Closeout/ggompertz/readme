@@ -1,0 +1,14 @@
+These diagnostic flipbooks produced by DataPrep_Closeout.R
+These are identical to those in Figures/GBD/Closeout/pclm
+below age 65, and are different above age 65.
+
+Presently the MortalityLaws gamma gompertz extrapolation (65-110) 
+is simply grafted onto graduated mortality in ages 0-64, 
+which in many instances induces a slight ridge at age 65
+since they don't join perfectly. This is similar to the age
+80 ridge in HMD data. Overall, the patterns in ages 65-95 are
+smoother and more believable than those given straight from pclm
+while ages 95-110 now will have less leverage on results, 
+as desired. Age 65 is still higher than our study area, so we accept
+this slight ridge as an aesthetic artifact with trivial 
+leverage on results.
