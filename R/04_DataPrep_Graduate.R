@@ -2,17 +2,17 @@
 # data (MID, LOW, UPP), but later it'll be expanded as needed 
 # for potential comparison datasets.
 
-source(here("GlobalViolence","R","00_Install_Packages.R"))
+source(here("R","00_Install_Packages.R"))
  
 if(.Platform$OS.type == "windows"){
   library(parallelsugar)
 } 
 
-source(here("GlobalViolence","R","01_Functions.R"))
+source(here("R","01_Functions.R"))
 
-dir.create(here("GlobalViolence","Data","Single","GBD"), showWarnings = FALSE, recursive = TRUE)
+dir.create(here("Data","Single","GBD"), showWarnings = FALSE, recursive = TRUE)
 
-gbd.folder <- here("GlobalViolence","Data","Grouped","GBD")
+gbd.folder <- here("Data","Grouped","GBD")
 
 variants <- c("low","mid","upp")
 
@@ -27,7 +27,7 @@ for (i in 1:length(variants)){
     split(list(GBDi$location,GBDi$sex,GBDi$year), drop = TRUE) %>% 
     mclapply(GBD.chunk,mc.cores = (detectCores() - 1)) %>% 
 	  rbindlist() %>% 
-	  saveRDS(file = here("GlobalViolence","Data","Single","GBD",paste0("GBD",variants[i],".rds")))
+	  saveRDS(file = here("Data","Single","GBD",paste0("GBD",variants[i],".rds")))
 	gc()
 }
 
@@ -42,12 +42,12 @@ locs<- readRDS(file.path(gbd.folder, paste0("GBD",variants[i],".rds"))) %>%
   pull(location) %>% unique()
 # diagnostic flipbooks
 for (i in 1:3){
-	GBDi <- readRDS(here("GlobalViolence","Data","Single","GBD",paste0("GBD",variants[i],".rds")))
+	GBDi <- readRDS(here("Data","Single","GBD",paste0("GBD",variants[i],".rds")))
 	GBDi <- GBDi %>% 
 	  mutate(sex = as.character(sex),
 	         location = as.character(location))
 	
-	pdf(here("GlobalViolence","Figures","GBD","Closeout","pclm",paste0("Diagnostic_GBD",variants[i],"males_pclm.pdf")))
+	pdf(here("Figures","GBD","Closeout","pclm",paste0("Diagnostic_GBD",variants[i],"males_pclm.pdf")))
 	for (l in 1:length(locs)){
 		M <- acast(filter(GBDi,
 		                  sex == "Male",
@@ -57,7 +57,7 @@ for (i in 1:3){
 	}
 	dev.off()
 	
-	pdf(here("GlobalViolence","Figures","GBD","Closeout","pclm",paste0("Diagnostic_GBD",variants[i],"_females_pclm.pdf")))
+	pdf(here("Figures","GBD","Closeout","pclm",paste0("Diagnostic_GBD",variants[i],"_females_pclm.pdf")))
 	for (l in 1:length(locs)){
 		M <- acast(filter(GBDi,
 		                  sex == "Female",

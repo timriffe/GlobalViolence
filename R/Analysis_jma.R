@@ -3,10 +3,10 @@
 # augment this as needed
 library(data.table)
 
-load('GlobalViolence/Data/Results/GBD/GBDmid.Rdata')
+load('Data/Results/GBD/GBDmid.Rdata')
 
 # get the GPI data
-GPI      <- read.csv('GlobalViolence/Data/Inputs/GPI/GPI_ISO3.csv',stringsAsFactors=FALSE)
+GPI      <- read.csv('Data/Inputs/GPI/GPI_ISO3.csv',stringsAsFactors=FALSE)
 setnames(GPI,"ISO3c","ISO3")
 GPI      <- data.table(GPI)
 GPIi <- GPI[type == "score"]

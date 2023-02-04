@@ -15,17 +15,17 @@
 #----------------------------------------------------------------------------------------------------#
 
 
-source(here("GlobalViolence","R","00_Install_Packages.R"))
+source(here("R","00_Install_Packages.R"))
 # creating new file directories for figures and storing data with the new GPI internal peace indicator created
 
-dir.create(here("GlobalViolence","Data","Results","GPI"), showWarnings = FALSE, recursive = TRUE)
-dir.create(here("GlobalViolence","Figures","GPI","Diagnostic"), showWarnings = FALSE, recursive = TRUE)
-dir.create(here("GlobalViolence","Figures","SuppMaterial"), showWarnings = FALSE, recursive = TRUE)
+dir.create(here("Data","Results","GPI"), showWarnings = FALSE, recursive = TRUE)
+dir.create(here("Figures","GPI","Diagnostic"), showWarnings = FALSE, recursive = TRUE)
+dir.create(here("Figures","SuppMaterial"), showWarnings = FALSE, recursive = TRUE)
 
 
 # Loading GBD data with all estimates and inequality measures
 
-GBD_est <- readRDS(here("GlobalViolence","Data",
+GBD_est <- readRDS(here("Data",
                         "Results","GBD",
                         "GBDmid.rds")) %>% 
             mutate(ISO3=countrycode(location, 
@@ -36,7 +36,7 @@ GBD_est <- readRDS(here("GlobalViolence","Data",
 # Read in GPI score values for all years and score type (overall score and individual domain scores).
 # Bulk read the scores
 
-path <- here("GlobalViolence","Data",
+path <- here("Data",
               "Inputs","GPI","GPI_scores_ind.xls")
 Year <- path %>%
   excel_sheets() %>%
@@ -55,7 +55,7 @@ GPI_ind_scores <- map2_df(Year,
 
 # reading the weights
 
-weights_gpi<-fread(here("GlobalViolence","Data","Inputs","GPI","GPI_weights.csv"))%>%
+weights_gpi<-fread(here("Data","Inputs","GPI","GPI_weights.csv"))%>%
   mutate(Indicator=as.factor(Indicator),
          Type=as.factor(Type))
 
@@ -88,7 +88,7 @@ gpi.test.rank<-gpi_test %>%
 
 # diagnostic plot
 
-pdf(file = here("GlobalViolence","Figures","GPI","Diagnostic","GPIdiagnostic.pdf"), width = 10, height = 10) 
+pdf(file = here("Figures","GPI","Diagnostic","GPIdiagnostic.pdf"), width = 10, height = 10) 
 ggplot(gpi.test.rank, aes(Rank,my_rank))+
   geom_point(size=1.5,alpha=1/20)+
   theme_bw(base_size = 16)+
@@ -132,7 +132,7 @@ gpi_ind<-gpi_ind %>%
   drop_na()
 
 # all regions
-pdf(file = here("GlobalViolence","Figures","GPI","Diagnostic","GPIdiagnostic_Regions.pdf"), 
+pdf(file = here("Figures","GPI","Diagnostic","GPIdiagnostic_Regions.pdf"), 
     width = 20, height = 15) 
 ggplot(gpi_ind, aes(Region, Indicator, fill=Scores))+
   geom_tile(aes(width=.95, height=.95))+
@@ -143,7 +143,7 @@ dev.off()
 
 # East Asia & Pacific
 
-pdf(file = here("GlobalViolence","Figures","GPI","Diagnostic","GPIdiagnostic_Asia.pdf"), 
+pdf(file = here("Figures","GPI","Diagnostic","GPIdiagnostic_Asia.pdf"), 
     width = 30, height = 15) 
 ggplot(gpi_ind %>% filter(Region=="East Asia & Pacific"), aes(Country, Indicator, fill=Scores))+
   geom_tile(aes(width=.95, height=.95))+
@@ -154,7 +154,7 @@ ggplot(gpi_ind %>% filter(Region=="East Asia & Pacific"), aes(Country, Indicator
 dev.off()
 
 # Latin America & Caribbean
-pdf(file = here("GlobalViolence","Figures","GPI","Diagnostic","GPIdiagnostic_LAC.pdf"), 
+pdf(file = here("Figures","GPI","Diagnostic","GPIdiagnostic_LAC.pdf"), 
     width = 30, height = 15) 
 ggplot(gpi_ind %>% filter(Region=="Latin America & Caribbean"), aes(Country, Indicator, fill=Scores))+
   geom_tile(aes(width=.95, height=.95))+
@@ -165,7 +165,7 @@ ggplot(gpi_ind %>% filter(Region=="Latin America & Caribbean"), aes(Country, Ind
 dev.off()
 
 # Sub-Saharan Africa
-pdf(file = here("GlobalViolence","Figures","GPI","Diagnostic","GPIdiagnostic_Africa.pdf"), 
+pdf(file = here("Figures","GPI","Diagnostic","GPIdiagnostic_Africa.pdf"), 
     width = 30, height = 15) 
 ggplot(gpi_ind %>% filter(Region=="Sub-Saharan Africa"), aes(Country, Indicator, fill=Scores))+
   geom_tile(aes(width=.95, height=.95))+
@@ -176,7 +176,7 @@ ggplot(gpi_ind %>% filter(Region=="Sub-Saharan Africa"), aes(Country, Indicator,
 dev.off()
 
 # North America
-pdf(file = here("GlobalViolence","Figures","GPI","Diagnostic","GPIdiagnostic_US_CAN.pdf"), 
+pdf(file = here("Figures","GPI","Diagnostic","GPIdiagnostic_US_CAN.pdf"), 
     width = 20, height = 15) 
 ggplot(gpi_ind %>% filter(Region=="North America"), aes(Country, Indicator, fill=Scores))+
   geom_tile(aes(width=.95, height=.95))+
@@ -217,7 +217,7 @@ gpi_domain_score<-gpi_int_peace %>%
 # graphing these results for the latest year
 # for women:
 
-pdf(file = here("GlobalViolence","Figures","GPI","Diagnostic","GPIDomain_Women.pdf"), width = 20,height = 5) 
+pdf(file = here("Figures","GPI","Diagnostic","GPIDomain_Women.pdf"), width = 20,height = 5) 
 
 labels_sdx_type<-gpi_domain_score %>%    
   filter(sex=="Female" & year==2017)%>% 
@@ -244,7 +244,7 @@ dev.off()
 
 # for men:
 
-pdf(file = here("GlobalViolence","Figures","GPI","Diagnostic","GPIDomain_Men.pdf"), width = 20,height = 5) 
+pdf(file = here("Figures","GPI","Diagnostic","GPIDomain_Men.pdf"), width = 20,height = 5) 
 
 labels_sdx_type_m<-gpi_domain_score %>%    
   filter(sex=="Male" & year==2017)%>% 
@@ -289,7 +289,7 @@ labels_sdx_int<-GPI_int %>%                             # labels for graphing
 labels_sdx_int$corr_sdx<-sprintf("italic(r) == %.3f", labels_sdx_int$corr_sdx)
 
 # Figure S1 : relationship between GPI and standard deviation by sex, year and age
-pdf(file = here("GlobalViolence","Figures","SuppMaterial","FigS1.pdf"), width = 15,height = 20) 
+pdf(file = here("Figures","SuppMaterial","FigS1.pdf"), width = 15,height = 20) 
 
 ggplot(GPI_int, aes(sdx,score_domain, group=sex, color=sex))+ 
   geom_point_rast(aes(colour=sex, fill=sex),shape = 21,colour = "black",alpha=1/10, size=4,show.legend = FALSE)+ 
@@ -331,7 +331,7 @@ labels_sdx_int_pooled$corr_sdx<-sprintf("italic(r) == %.3f", labels_sdx_int_pool
 #Figure Pooled Results - don?t know yet whether JM will add this Figure or when. So left it as FigS3
 # here but we can take out later or decide how to rename it/take it out.
 
-pdf(file = here("GlobalViolence","Figures","SuppMaterial","FigS3.pdf"), width = 19,height = 5) 
+pdf(file = here("Figures","SuppMaterial","FigS3.pdf"), width = 19,height = 5) 
 
 ggplot(GPI_int_pooled, aes(sdx,score_domain, group=sex, color=sex))+
   geom_point_rast(aes(colour=sex, fill=sex),shape = 21,colour = "black",alpha=1/10, size=4,show.legend = FALSE)+ 
@@ -368,7 +368,7 @@ labels_ex_int<-GPI_int %>%                             # labels for graphing
 labels_ex_int$corr_ex<-sprintf("italic(r) == %.3f", labels_ex_int$corr_ex)
 
 
-pdf(file = here("GlobalViolence","Figures","SuppMaterial","FigS4.pdf"), width = 19,height = 5) 
+pdf(file = here("Figures","SuppMaterial","FigS4.pdf"), width = 19,height = 5) 
 ggplot(GPI_int, aes(ex,score_domain, group=sex, color=sex))+
   geom_point_rast(aes(colour=sex, fill=sex),shape = 21,colour = "black",alpha=1/10, size=4,show.legend = FALSE)+ 
   geom_point_rast(alpha=1/40, size=3.3)+
@@ -392,8 +392,8 @@ dev.off()
 # Figure 2 (bivariate scatterplot) in the main text.
 # ----------------------------------------------------------------------------------------------------------------------#
 
-saveRDS(GPI_int, file = file.path(here("GlobalViolence","Data","Results","GPI", "GBD_GPI_int.rds")))
-saveRDS(gpi_domain_score, file = file.path(here("GlobalViolence","Data","Results","GPI", "GBD_GPI_int_ext.rds")))
+saveRDS(GPI_int, file = file.path(here("Data","Results","GPI", "GBD_GPI_int.rds")))
+saveRDS(gpi_domain_score, file = file.path(here("Data","Results","GPI", "GBD_GPI_int_ext.rds")))
 
 
 # Following are additional checks to see whether the GPI internal Peace indicator with weighted averages is robust
@@ -410,7 +410,7 @@ saveRDS(gpi_domain_score, file = file.path(here("GlobalViolence","Data","Results
 
 # Constructing the indicator only by level of internal peace
 # Read in GBD data estimated in the Results folder- selecting the mid version
-# GBD_est <- readRDS(here("GlobalViolence","Data",
+# GBD_est <- readRDS(here("Data",
 #                        "Results","GBD", "GBDmid.rds"))
 
 # Transforming ISO codes into country names for better identification
@@ -419,7 +419,7 @@ saveRDS(gpi_domain_score, file = file.path(here("GlobalViolence","Data","Results
 #                          destination="iso3c")
 
 # Read in GPI score values 
-# GPI_ISO3 <- fread(here("GlobalViolence","Data",
+# GPI_ISO3 <- fread(here("Data",
 #                       "Inputs","GPI", 
 #                      "GPI_ISO3.csv"))
 

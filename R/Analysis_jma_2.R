@@ -15,7 +15,7 @@ library(scales)
 # Load data ---------------------------------------------------------------
 
 #get data from GPI
-GPI_2017 <- data.table(read_excel('GlobalViolence/Data/GPI complete/GPI_scores 2008-2019.xlsx',
+GPI_2017 <- data.table(read_excel('Data/GPI complete/GPI_scores 2008-2019.xlsx',
                                   sheet="2017",
                                   range = 'A4:Z167',
                                   col_names = TRUE))
@@ -23,7 +23,7 @@ GPI_2017 <- data.table(read_excel('GlobalViolence/Data/GPI complete/GPI_scores 2
 GPI_2017 <- GPI_2017[order(-Rank)]
 
 #get GBD data, from Vanessa
-GBDmid <- data.table(readRDS("GlobalViolence/Data/GBD_Vanessa/GBDmid.rds"))
+GBDmid <- data.table(readRDS("Data/GBD_Vanessa/GBDmid.rds"))
 
 # Get indicators for age 10 in 2017 with ISO names
 GPI_2017  <-GPI_2017 %>%
@@ -50,7 +50,7 @@ Data_2017$rank_gpi <- Data_2017$Rank
 Data_2017 <- data.table(bi_class(Data_2017, x = sdx, y = Rank, style = "quantile", dim = 3))
 
 ### get decomposition results with second group of countries
-load("GlobalViolence/Data/Results/GBD/DECsd10_HIGHVIO2.rds")
+load("Data/Results/GBD/DECsd10_HIGHVIO2.rds")
 
 gdata::keep(Data_2017,DECsd2,GBDmid,GPI_2017, sure = T)
 
@@ -183,11 +183,11 @@ p2
 
 
 
-pdf(file="GlobalViolence/Figures/Figure3_06082021.pdf",width=8,height=7,pointsize=4)
+pdf(file="Figures/Figure3_06082021.pdf",width=8,height=7,pointsize=4)
 p1
 dev.off()
 
-pdf(file="GlobalViolence/Figures/Figure4_06082021.pdf",width=10,height=7,pointsize=4)
+pdf(file="Figures/Figure4_06082021.pdf",width=10,height=7,pointsize=4)
 p2
 dev.off()
 
@@ -195,7 +195,7 @@ dev.off()
 #sdx_no_hw vs IPI
 library(tidyverse)
 
-DAT <- readRDS(here::here("GlobalViolence/Data/Results/GPI/GBD_GPI_int.rds"))
+DAT <- readRDS(here::here("Data/Results/GPI/GBD_GPI_int.rds"))
 DAT
 DAT %>% 
   filter(sex == "Male",
@@ -335,7 +335,7 @@ DAT %>%
 # 
 # 
 # library(gridExtra)
-# pdf(file="GlobalViolence/Figures/Figure2V2.pdf",width=14,height=14,pointsize=4)
+# pdf(file="Figures/Figure2V2.pdf",width=14,height=14,pointsize=4)
 # 
 # grid.arrange(p1,p2, ncol = 2)
 # 
@@ -358,7 +358,7 @@ DAT %>%
 #         panel.background = element_rect(fill = NA, color = "lightgrey"))
 # p6
 # 
-# pdf(file="GlobalViolence/Figures/legend.pdf",width=5,height=5,pointsize=4)
+# pdf(file="Figures/legend.pdf",width=5,height=5,pointsize=4)
 # p6
 # dev.off()
 # 
@@ -475,7 +475,7 @@ DAT %>%
 # p5
 # 
 # 
-# pdf(file="GlobalViolence/Figures/Figure2V1.pdf",width=8,height=14,pointsize=4)
+# pdf(file="Figures/Figure2V1.pdf",width=8,height=14,pointsize=4)
 # 
 # (p1 + plot_spacer() + plot_layout(widths = c(4,1))) / (p2 + plot_layout(widths = c(5))) / (p3.1 + plot_layout(widths = c(5))) / 
 #   (p3.2 + plot_layout(widths = c(5))) / (p3.3 + plot_spacer() + plot_layout(widths = c(3,2))) /
@@ -500,7 +500,7 @@ DAT %>%
 #         panel.background = element_rect(fill = NA, color = "lightgrey"))
 # p6
 # 
-# pdf(file="GlobalViolence/Figures/legend.pdf",width=5,height=5,pointsize=4)
+# pdf(file="Figures/legend.pdf",width=5,height=5,pointsize=4)
 # p6
 # dev.off()
 # 

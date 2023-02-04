@@ -1,19 +1,18 @@
-source(here("GlobalViolence","R","00_Install_Packages.R"))
-source(here("GlobalViolence","R","01_Functions.R"))
+source(here("R","01_Functions.R"))
 
-dir.create(here("GlobalViolence","Figures","GBD","Decomp"), showWarnings = FALSE, recursive = TRUE)
+dir.create(here("Figures","GBD","Decomp"), showWarnings = FALSE, recursive = TRUE)
 # variant
 vnt  <- "mid"
 yr   <- 2017
 
 # Code from here down not rerun
-# GPI      <- read_csv(here("GlobalViolence","Data","Inputs","GPI","GPI_ISO3.csv"))
+# GPI      <- read_csv(here("Data","Inputs","GPI","GPI_ISO3.csv"))
 #setnames(GPI,"ISO3c","ISO3")
 
 # Read in GPI score values for all years and score type (overall score).
 # Bulk read the scores
 
-path <- here("GlobalViolence","Data",
+path <- here("Data",
              "Inputs","GPI","GPI_scores_ind.xls")
 Year <- path %>%
   excel_sheets() %>%
@@ -57,7 +56,7 @@ maxr     <- max(GPI[year==yr]$rank)
 GPIHIGH  <- GPI[year==yr & rank > (maxr - 25)]$ISO3
 
 
-GBD  <- readRDS(here("GlobalViolence","Data","Results","GBD",paste0("GBD",vnt,".rds"))) %>% 
+GBD  <- readRDS(here("Data","Results","GBD",paste0("GBD",vnt,".rds"))) %>% 
   mutate(sex=as.character(sex),
          year=as.numeric(year)) %>% 
   left_join(GPI)
@@ -140,20 +139,20 @@ plot_testing <- function(X,x,sx="Males",ylim=c(-.1,1.7)){
 
 # this is the decomposition code, can take a long time.
 DECsd  <- HIGHVIO[,decomp_sd(.SD),by=list(ISO3,sex)]
-save(DECsd,file=here("GlobalViolence","Data","Results","GBD","DECsd10_HIGHVIO.rds"))
+save(DECsd,file=here("Data","Results","GBD","DECsd10_HIGHVIO.rds"))
 
 DECsd2  <- HIGHVIO2[,decomp_sd(.SD),by=list(ISO3,sex)]
-save(DECsd2,file=here("GlobalViolence","Data","Results","GBD","DECsd10_HIGHVIO2.rds"))
+save(DECsd2,file=here("Data","Results","GBD","DECsd10_HIGHVIO2.rds"))
 
 
 DECed  <- HIGHVIO[,decomp_edagger(.SD),by=list(ISO3,sex)]
-save(DECed,file=here("GlobalViolence","Data","Results","GBD","DECed10_HIGHVIO.rds"))
+save(DECed,file=here("Data","Results","GBD","DECed10_HIGHVIO.rds"))
 
 DECed2  <- HIGHVIO2[,decomp_edagger(.SD),by=list(ISO3,sex)]
-save(DECed2,file=here("GlobalViolence","Data","Results","GBD","DECed10_HIGHVIO2.rds"))
+save(DECed2,file=here("Data","Results","GBD","DECed10_HIGHVIO2.rds"))
 DECed2
 # plot sd decomp results in flipbooks
-pdf(here("GlobalViolence","Figures","GBD","Decomp","Decomp_sd_Males_FlipBook.pdf"))
+pdf(here("Figures","GBD","Decomp","Decomp_sd_Males_FlipBook.pdf"))
 for (x in unique(DECsd$ISO3)){
 	
 	X  <- as.matrix(DECsd[ISO3==x & sex == "Male",c(4:6)])
@@ -161,7 +160,7 @@ for (x in unique(DECsd$ISO3)){
 }
 dev.off()
 
-pdf(here("GlobalViolence","Figures","GBD","Decomp","Decomp_sd_Females_FlipBook.pdf"))
+pdf(here("Figures","GBD","Decomp","Decomp_sd_Females_FlipBook.pdf"))
 for (x in unique(DECsd$ISO3)){
 	
 	X  <- as.matrix(DECsd[ISO3==x & sex == "Female",c(4:6)])
@@ -170,7 +169,7 @@ for (x in unique(DECsd$ISO3)){
 dev.off()
 
 # plot edagger decomp results in flipbooks
-pdf(here("GlobalViolence","Figures","GBD","Decomp","Decomp_Edagger_Males_FlipBook.pdf"))
+pdf(here("Figures","GBD","Decomp","Decomp_Edagger_Males_FlipBook.pdf"))
 for (x in unique(DECed$ISO3)){
 	
 	X  <- as.matrix(DECed[ISO3==x & sex == 1,c(4:6)])
@@ -179,7 +178,7 @@ for (x in unique(DECed$ISO3)){
 dev.off()
 
 
-pdf(here("GlobalViolence","Figures","GBD","Decomp","Decomp_Edagger_Females_FlipBook.pdf"))
+pdf(here("Figures","GBD","Decomp","Decomp_Edagger_Females_FlipBook.pdf"))
 for (x in unique(DECed$ISO3)){
 	
 	X  <- as.matrix(DECed[ISO3==x & sex == 2,c(4:6)])

@@ -3,16 +3,16 @@
 # for women and men, at age 10, year 2017, with Pearson's correlation coefficient printed.
 #-----------------------------------------------------------------------------------------------#
 
-source(here("GlobalViolence","R","00_Install_Packages.R"))
+source(here("R","00_Install_Packages.R"))
 
 # creating new file directories for bivariate map and bivariate scatter figures
 
-dir.create(here("GlobalViolence","Figures","BivariateMaps"), showWarnings = FALSE, recursive = TRUE)
-dir.create(here("GlobalViolence","Figures","BivariateScatterPlots"), showWarnings = FALSE, recursive = TRUE)
+dir.create(here("Figures","BivariateMaps"), showWarnings = FALSE, recursive = TRUE)
+dir.create(here("Figures","BivariateScatterPlots"), showWarnings = FALSE, recursive = TRUE)
 
 # loading data for internal Peace and selecting only latest year and age 10 for analysis
 
-GPI_int<- readRDS(here("GlobalViolence","Data","Results","GPI","GBD_GPI_int.rds"))%>% 
+GPI_int<- readRDS(here("Data","Results","GPI","GBD_GPI_int.rds"))%>% 
   dplyr::filter(year==2017 & age==10)
 
   
@@ -152,7 +152,7 @@ legend <- bi_legend(pal = "DkViolet",
 
 # final plot  -uncomment here to create the plot for men separately
 
-#pdf(file = here("GlobalViolence","Maps","men_bimap.pdf"), width = 18,height = 10) 
+#pdf(file = here("Maps","men_bimap.pdf"), width = 18,height = 10) 
 finalPlot_men <- ggdraw() +
   draw_plot(map_m, 0, 0, 1, 1)+
   draw_plot(legend, 0.1, .1, 0.2, 0.2) # use this only if want legend together
@@ -185,7 +185,7 @@ scatter_plot <- ggplot(data_map_men_10,
 
 
 
-pdf(file = here("GlobalViolence","Figures","BivariateScatterPlots","men_biscatter_2017.pdf"), width = 10,height = 10) 
+pdf(file = here("Figures","BivariateScatterPlots","men_biscatter_2017.pdf"), width = 10,height = 10) 
 scatter_plot_m <- ggdraw() +
   draw_plot(scatter_plot, 0, 0, 1, 1)+
   draw_plot(legend, 0.7, .1, 0.2, 0.2)
@@ -236,7 +236,7 @@ legend <- bi_legend(pal = "DkViolet",
         panel.background = element_rect(fill = "transparent"))
 
 # final plot
-#pdf(file = here("GlobalViolence","Maps","women_bimap.pdf"), width = 18,height = 10) 
+#pdf(file = here("Maps","women_bimap.pdf"), width = 18,height = 10) 
 #finalPlot_f <- ggdraw() +
 #  draw_plot(map_f, 0, 0, 1, 1)+
 #  draw_plot(legend, 0.1, .1, 0.2, 0.2) # use this only if want legend together
@@ -246,7 +246,7 @@ legend <- bi_legend(pal = "DkViolet",
 
 # joining women and men for a composite map
 
-pdf(file = here("GlobalViolence","Figures","BivariateMaps","women_men_bimap.pdf"), width = 15,height = 20) 
+pdf(file = here("Figures","BivariateMaps","women_men_bimap.pdf"), width = 15,height = 20) 
 ggarrange(finalPlot_men, map_f, ncol = 1)
 dev.off()
 
@@ -276,7 +276,7 @@ scatter_plot_f <- ggplot(data_map_f_10,
            label.x = 11, label.y = 4,size = 8)
  # facet_grid(.~Region)
 
-pdf(file = here("GlobalViolence","Figures","BivariateScatterPlots","women_biscatter_2017.pdf"), width = 10,height = 10) 
+pdf(file = here("Figures","BivariateScatterPlots","women_biscatter_2017.pdf"), width = 10,height = 10) 
 scatter_plot_f <- ggdraw() +
   draw_plot(scatter_plot_f, 0, 0, 1, 1)+
   draw_plot(legend, 0.7, .1, 0.2, 0.2)

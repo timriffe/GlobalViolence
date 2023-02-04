@@ -6,7 +6,7 @@
 # older ages may need to be overwritten using MortalityLaws if they are awful.
 
 # This script *follows* DataPrep_Graduate.R for now.
-source(here("GlobalViolence","R","00_Install_Packages.R"))
+source(here("R","00_Install_Packages.R"))
 
 if(.Platform$OS.type == "windows"){
   library(parallelsugar)
@@ -29,8 +29,8 @@ GBD.closeout <- function(.SD,
 	.SD
 }
 
-dir.create(here("GlobalViolence","Data","Closeout","GBD"),recursive=TRUE,showWarnings=FALSE)
-dir.create(here("GlobalViolence","Figures","GBD","Closeout","ggompertz"),recursive=TRUE,showWarnings=FALSE)
+dir.create(here("Data","Closeout","GBD"),recursive=TRUE,showWarnings=FALSE)
+dir.create(here("Figures","GBD","Closeout","ggompertz"),recursive=TRUE,showWarnings=FALSE)
 
 variants <- c("low","mid","upp")
 
@@ -42,7 +42,7 @@ extrap_low    <- c(60,70,80,90)
 
 # takes 5-10 min, uses 10 or Gb. Reduce mc.cores to reduce memory requirements.
 for (i in 1:3){
-	GBDi          <- readRDS(here("GlobalViolence","Data","Single","GBD",paste0("GBD",variants[i],".rds")))
+	GBDi          <- readRDS(here("Data","Single","GBD",paste0("GBD",variants[i],".rds")))
 	GBDi$location <- as.character(GBDi$location)
 	GBDi$ISO3     <- as.character(GBDi$ISO3)
 
@@ -51,7 +51,7 @@ for (i in 1:3){
 	           fit_low = 65, fit_up = 90, extrap_low = 65,
 	           omega = 110, law = "ggompertz") %>% 
 	  rbindlist() %>% 
-		saveRDS(file = here("GlobalViolence","Data","Closeout","GBD",
+		saveRDS(file = here("Data","Closeout","GBD",
 					paste0("GBD",variants[i],"_ggompertz_65_90_65.rds")))
 	gc()
 }
@@ -64,10 +64,10 @@ if (make_flipbooks){
   
 for (i in 1:3){
 	GBDi <-  readRDS(
-							here("GlobalViolence","Data","Closeout","GBD",
+							here("Data","Closeout","GBD",
 									paste0("GBD",variants[i],"_ggompertz_65_90_65.rds")))
 	locs <- GBDi %>% pull(location) %>% unique()
-	pdf(here("GlobalViolence","Figures","GBD","Closeout","ggompertz",
+	pdf(here("Figures","GBD","Closeout","ggompertz",
 	         paste0("Diagnostic_GBD",variants[i],"_males_ggompertz_65_90_65.pdf")))
 	for (l in 1:length(locs)){
 		M <- acast(GBDi[sex == "Male" & location == locs[l]], age~year, value.var = "Ma")
@@ -76,7 +76,7 @@ for (i in 1:3){
 	}
 	dev.off()
 	
-	pdf(here("GlobalViolence","Figures","GBD","Closeout","ggompertz",
+	pdf(here("Figures","GBD","Closeout","ggompertz",
 	         paste0("Diagnostic_GBD",variants[i],"_females_ggompertz_65_90_65.pdf")))
 	for (l in 1:length(locs)){
 		M <- acast(GBDi[sex == "Female" & location == locs[l]], age~year, value.var = "Ma")
